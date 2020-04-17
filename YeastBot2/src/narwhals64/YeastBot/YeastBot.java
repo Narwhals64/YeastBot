@@ -40,8 +40,10 @@ public class YeastBot {
 		
 		System.out.println("Loading Yeast Bot Profiles.");
 	}
-	
+
+
 	public static void loadProfiles() {
+		/*
 		File profilesFolder = new File(profilesPath);
 		for (File f : profilesFolder.listFiles()) {
 			if (f.isFile()) {
@@ -50,18 +52,23 @@ public class YeastBot {
 				profiles.add(prof);
 			}
 		}
+		*/
 	}
-	
+
 	public static YeastBotProfile getProfile(String id) {
+		return null;
+		/*
 		for (YeastBotProfile prof : profiles)
 			if (id.equals(prof.getId()))
 				return prof;
 		createProfileFile(id);
 		profiles.get(profiles.size()-1).save();
 		return profiles.get(profiles.size()-1);
+		*/
 	}
-	
+
 	public static void createProfileFile(String id) {
+		/*
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(YeastBot.profilesPath + id + ".txt"));
 			bw.write("");
@@ -71,5 +78,8 @@ public class YeastBot {
 			System.out.println("The file for a new profile could not be created.");
 		}
 		profiles.add(new YeastBotProfile(id));
+		*/
 	}
+
+
 }
