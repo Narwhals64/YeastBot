@@ -3,31 +3,34 @@ package narwhals64.YeastBot.CardGames.Cards;
 import narwhals64.YeastBot.CardGames.Card;
 
 public class StandardCard extends Card {
-    private int rank;
-    private String suit;
-
 
     public StandardCard() {
-        rank = 0;
-        suit = "";
+        super();
+    }
+    public StandardCard(int rank, int suit) {
+        super(rank, suit);
     }
 
-    public StandardCard(int rank, String suit) {
-        this.rank = rank;
-        this.suit = suit;
-        if (suit.equals("S") || suit.equals("1"))
-            this.suit = "Spades";
-        else if (suit.equals("D") || suit.equals("2"))
-            this.suit = "Diamonds";
-        else if (suit.equals("C") || suit.equals("3"))
-            this.suit = "Clubs";
-        else if (suit.equals("H") || suit.equals("4"))
-            this.suit = "Hearts";
+    public int getRank() {
+        return getMinorRank();
+    }
+    public void setRank(int rank) {
+        setMinorRank(rank);
+    }
+
+    public int getSuit() {
+        return getMajorRank();
+    }
+    public void setSuit(int suit) {
+        setMajorRank(suit);
     }
 
     public String toString() {
-        if (rank == 0) { // test for Joker
-            if (suit.equals("Spades") || suit.equals("Clubs"))
+        if (!isFaceUp())
+            return "[==]";
+
+        if (getRank() == 0) {
+            if (getSuit() == 1 || getSuit() == 3)
                 return "[B?]";
             else
                 return "[R?]";
@@ -35,27 +38,31 @@ public class StandardCard extends Card {
 
         String output = "[";
 
-        if (rank > 1 && rank < 10)
-            output += rank;
-        else if (rank == 10)
-            output += "0";
-        else if (rank == 11)
+        if (getRank() > 1 || getRank() < 10)
+            output += getRank();
+        else if (getRank() == 10)
+            output += "F";
+        else if (getRank() == 11)
             output += "J";
-        else if (rank == 12)
+        else if (getRank() == 12)
             output += "Q";
-        else if (rank == 13)
+        else if (getRank() == 13)
             output += "K";
-        else if (rank == 14 || rank == 1)
+        else if (getRank() == 1 || getRank() == 14)
             output += "A";
-
-        if (suit.equals("Spades"))
-            output += "S]";
-        else if (suit.equals("Diamonds"))
-            output += "D]";
-        else if (suit.equals("Clubs"))
-            output += "C]";
         else
-            output += "H]";
+            output += "/";
+
+        if (getSuit() == 1)
+            output += "S";
+        else if (getSuit() == 2)
+            output += "D";
+        else if (getSuit() == 3)
+            output += "C";
+        else if (getSuit() == 4)
+            output += "H";
+        else
+            output += "/";
 
         return output;
     }
