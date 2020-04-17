@@ -31,14 +31,17 @@ public class YeastBot {
 		builder.addEventListeners(new Info());
 		builder.addEventListeners(new Question());
 		builder.addEventListeners(new Say());
-		
-		// YeastBA
 		builder.addEventListeners(new Inv());
 		builder.addEventListeners(new Shop());
+
+		builder.addEventListeners(new ShuffleDeck());
 		
 		builder.build();
 		
 		System.out.println("Loading Yeast Bot Profiles.");
+
+
+
 	}
 
 
