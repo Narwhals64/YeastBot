@@ -45,7 +45,9 @@ public class YeastBot {
 		File profilesFolder = new File(profilesPath);
 		for (File f : profilesFolder.listFiles()) {
 			if (f.isFile()) {
-				profiles.add(new YeastBotProfile(f.getName().substring(0,f.getName().length() - 4)));
+				YeastBotProfile prof = new YeastBotProfile(f.getName().substring(0,f.getName().length() - 4));
+				prof.load();
+				profiles.add(prof);
 			}
 		}
 	}
@@ -54,18 +56,19 @@ public class YeastBot {
 		for (YeastBotProfile prof : profiles)
 			if (id.equals(prof.getId()))
 				return prof;
-		createProfile(id);
+		createProfileFile(id);
+		profiles.get(profiles.size()-1).save();
 		return profiles.get(profiles.size()-1);
 	}
 	
-	public static void createProfile(String id) {
+	public static void createProfileFile(String id) {
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(YeastBot.profilesPath + id + ".txt"));
 			bw.write("");
 			bw.close();
 			
 		} catch (Exception e) {
-
+			System.out.println("The file for a new profile could not be created.");
 		}
 		profiles.add(new YeastBotProfile(id));
 	}

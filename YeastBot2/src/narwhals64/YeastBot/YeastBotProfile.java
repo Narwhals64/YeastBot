@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 import narwhals64.YeastBot.Items.Item;
 import narwhals64.YeastBot.Items.Containers.Inventory;
@@ -24,11 +25,16 @@ public class YeastBotProfile {
 	private Inventory inv;
 		
 	
-	@SuppressWarnings("unchecked")
 	public YeastBotProfile(String id) {
 		this.id = id;
-		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void load() {
 		try {
+			inv = new Inventory();
+			inv.setOwner(id);
+			
 			BufferedReader br = new BufferedReader(new FileReader(new File(YeastBot.profilesPath + id + ".txt")));
 			
 			// Line 1 - currency
@@ -64,12 +70,16 @@ public class YeastBotProfile {
 			
 			// Line 3 - profile statistics
 			line = br.readLine();
+			System.out.println(line);
 			
-			wins = 0;
-			losses = 0;
-			draws = 0;
 			
-			if (line != null) {
+			
+			if (line == null || line.equals("")) {
+				wins = 0;
+				losses = 0;
+				draws = 0;
+			}
+			else {
 				String[] elems = line.split(":");
 				
 				if (elems.length >= 1 && elems[0] != null)
@@ -85,11 +95,9 @@ public class YeastBotProfile {
 			
 			br.close();
 			
-			save();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("A file could not be loaded for some reason.");
+		}
+		catch (Exception e) {
+			System.out.println("A profile could not be loaded for some reason.");
 		}
 	}
 	
