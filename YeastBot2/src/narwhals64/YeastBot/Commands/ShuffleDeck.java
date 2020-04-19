@@ -12,6 +12,12 @@ public class ShuffleDeck extends ListenerAdapter {
         if (args[0].equalsIgnoreCase(YeastBot.prefix + "shuffledeck") || args[0].equalsIgnoreCase(YeastBot.prefix + "sd")) {
             Deck d = new Deck();
             event.getChannel().sendMessage(d.toString()).queue();
+            d.flipDeck();
+            event.getChannel().sendMessage(d.toString()).queue();
+            d.shuffle();
+            event.getChannel().sendMessage(d.toString()).queue();
+            d.flipDeck();
+            event.getChannel().sendMessage(d.toString()).queue();
         }
     }
 }

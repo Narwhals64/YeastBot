@@ -38,7 +38,7 @@ public class StandardCard extends Card {
 
         String output = "[";
 
-        if (getRank() > 1 || getRank() < 10)
+        if (getRank() > 1 && getRank() < 10)
             output += getRank();
         else if (getRank() == 10)
             output += "F";
@@ -54,17 +54,18 @@ public class StandardCard extends Card {
             output += "/";
 
         if (getSuit() == 1)
-            output += "S";
+            output += "♠";
         else if (getSuit() == 2)
-            output += "D";
+            output += "♦";
         else if (getSuit() == 3)
-            output += "C";
+            output += "♣";
         else if (getSuit() == 4)
-            output += "H";
+            output += "♥";
         else
             output += "/";
-
-        return output;
+        return output + "]";
     }
+
+
 
 }

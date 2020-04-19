@@ -61,7 +61,9 @@ public abstract class Card {
     }
 
     public String toString() {
-        return "[" + minorRank + "," + majorRank + "]";
+        if (faced)
+            return "[" + minorRank + "," + majorRank + "]";
+        return "[===]";
     }
 
 }
