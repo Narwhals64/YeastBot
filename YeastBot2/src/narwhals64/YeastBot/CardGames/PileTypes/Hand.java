@@ -11,7 +11,22 @@ public class Hand {
         hand = new ArrayList<>();
     }
 
+    public void sortHand() {
+
+    }
+
+    public int getSize() {
+        return hand.size();
+    }
+
     public Card getCard(int n) {
         return hand.get(n % hand.size());
+    }
+
+    public String toString() {
+        String output = "";
+        for (Card c : hand)
+            output += c.toString() + " ";
+        return output;
     }
 }
