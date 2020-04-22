@@ -18,6 +18,8 @@ public class YeastBot {
 	public static String profilesPath = "C:\\Users\\Ethan Rao\\Desktop\\Yeast Bot\\profiles\\";
 	
 	public static ArrayList<YeastBotProfile> profiles = new ArrayList<>();
+
+	public static ArrayList<GameInstance> gameInstances;
 	
 	public static void main(String[] args) throws LoginException {
 		
@@ -35,12 +37,13 @@ public class YeastBot {
 		builder.addEventListeners(new Shop());
 
 		builder.addEventListeners(new ShuffleDeck());
+		builder.addEventListeners(new JoinGame());
 		
 		builder.build();
 		
 		System.out.println("Loading Yeast Bot Profiles.");
 
-
+		gameInstances = new ArrayList<>();
 
 	}
 

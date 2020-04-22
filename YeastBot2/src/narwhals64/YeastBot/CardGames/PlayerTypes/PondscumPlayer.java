@@ -1,9 +1,9 @@
 package narwhals64.YeastBot.CardGames.PlayerTypes;
 
-import narwhals64.YeastBot.CardGames.CardPlayer;
 import narwhals64.YeastBot.CardGames.PileTypes.Hand;
+import narwhals64.YeastBot.GamePlayer;
 
-public class PondscumPlayer extends CardPlayer {
+public class PondscumPlayer extends GamePlayer {
 
     private Hand hand;
 
