@@ -38,6 +38,8 @@ public class YeastBot {
 
 		builder.addEventListeners(new ShuffleDeck());
 		builder.addEventListeners(new JoinGame());
+
+		builder.addEventListeners(new Fish());
 		
 		builder.build();
 		
