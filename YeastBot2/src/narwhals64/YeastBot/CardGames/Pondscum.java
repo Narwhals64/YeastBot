@@ -2,14 +2,10 @@ package narwhals64.YeastBot.CardGames;
 
 import narwhals64.YeastBot.CardGames.PlayerTypes.PondscumPlayer;
 import narwhals64.YeastBot.GameInstance;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Pondscum extends GameInstance {
     public static int TOTAL_PONDSCUM_GAMES = 0;
@@ -20,6 +16,9 @@ public class Pondscum extends GameInstance {
     private boolean allPlayersNormal; // for the first game, all players are considered normal.
 
     Guild guild;
+    TextChannel channel;
+
+    private int curPlayerIndex;
 
     public Pondscum(GuildMessageReceivedEvent event) {
         super("Pondscum Game #" + (TOTAL_PONDSCUM_GAMES+1));
@@ -30,6 +29,9 @@ public class Pondscum extends GameInstance {
         allPlayersNormal = true;
 
         guild = event.getGuild();
+        channel = event.getChannel();
+
+        curPlayerIndex = 0;
 
         TOTAL_PONDSCUM_GAMES++;
     }
@@ -60,15 +62,21 @@ public class Pondscum extends GameInstance {
     }
 
     public void initializeRound() {
-
+        /*
         for (PondscumPlayer player : players) {
             Member member = guild.getMemberById(player.getId());
+
             guild.createTextChannel("pondscum-" + player.getId()).
                     addPermissionOverride(guild.getRoleById(240614349247479819L),null, Collections.singleton(Permission.MESSAGE_READ)).  // Set @everyone to not be able to read messages
                     addPermissionOverride(member, Collections.singleton(Permission.MESSAGE_READ),null).                                  // Set the given player to read the new channel
                     addPermissionOverride(member, Collections.singleton(Permission.MESSAGE_WRITE),null).queue();                         // Set the given player to write to the new channel
 
         }
+        */
+
+        joinPlayers();
+
     }
+
 
 }

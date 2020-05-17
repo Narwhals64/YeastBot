@@ -16,6 +16,9 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 public class YeastBotProfile {
 
 
+	public YeastBotProfile(String substring) {
+	}
+
 	public static String[] separateWithParams(String data) {
 		return null;
 	}
@@ -40,5 +43,12 @@ public class YeastBotProfile {
 
 	public void incrementGrains(int i) {
 
+	}
+
+    public void load() {
+    }
+
+	public String getId() {
+		return null;
 	}
 }

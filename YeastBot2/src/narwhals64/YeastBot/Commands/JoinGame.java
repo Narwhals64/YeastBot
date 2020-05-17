@@ -17,7 +17,7 @@ public class JoinGame extends ListenerAdapter {
 
             if (arguments == 1) { // "jg" --> list available games
                 String output = "**Available Games:**";
-                int index = 1;
+                int index = 0;
                 for (GameInstance gi : YeastBot.gameInstances) {
                     index++;
                     output += "\n(" + index + ")  " + gi.toString();

@@ -1,9 +1,8 @@
 package narwhals64.YeastBot;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.security.auth.login.LoginException;
 
@@ -20,14 +19,20 @@ public class YeastBot {
 	public static ArrayList<YeastBotProfile> profiles = new ArrayList<>();
 
 	public static ArrayList<GameInstance> gameInstances;
+	public static
+
+	public static boolean useYeastBotProfiles = false;
 	
 	public static void main(String[] args) throws LoginException {
 		
 		JDABuilder builder = new JDABuilder();
-		
+
+
 		builder.setToken("MjQzMDYxNzUwMTEzNjMyMjU4.XiqTXg.iX0FvigyckBZNHB4OfRQvX8ZiwM");
 		
 		builder.setStatus(OnlineStatus.ONLINE);
+
+		builder.addEventListeners(new BasicText()); // command-less
 		
 		builder.addEventListeners(new Clear());
 		builder.addEventListeners(new Info());
@@ -51,29 +56,29 @@ public class YeastBot {
 
 
 	public static void loadProfiles() {
-		/*
-		File profilesFolder = new File(profilesPath);
-		for (File f : profilesFolder.listFiles()) {
-			if (f.isFile()) {
-				YeastBotProfile prof = new YeastBotProfile(f.getName().substring(0,f.getName().length() - 4));
-				prof.load();
-				profiles.add(prof);
-			}
-		}
-		*/
+		if (useYeastBotProfiles) {
+            File profilesFolder = new File(profilesPath);
+            for (File f : profilesFolder.listFiles()) {
+                if (f.isFile()) {
+                    YeastBotProfile prof = new YeastBotProfile(f.getName().substring(0, f.getName().length() - 4));
+                    prof.load();
+                    profiles.add(prof);
+                }
+            }
+        }
 	}
 
 	public static YeastBotProfile getProfile(String id) {
-		return null;
-		/*
-		for (YeastBotProfile prof : profiles)
-			if (id.equals(prof.getId()))
-				return prof;
-		createProfileFile(id);
-		profiles.get(profiles.size()-1).save();
-		return profiles.get(profiles.size()-1);
-		*/
-	}
+	    if (useYeastBotProfiles) {
+            for (YeastBotProfile prof : profiles)
+                if (id.equals(prof.getId()))
+                    return prof;
+            createProfileFile(id);
+            profiles.get(profiles.size()-1).save();
+            return profiles.get(profiles.size()-1);
+        }
+        return null;
+    }
 
 	public static void createProfileFile(String id) {
 		/*
