@@ -1,5 +1,6 @@
-package narwhals64.YeastBot.CardGames;
+package narwhals64.YeastBot.CardGames.GameTypes;
 
+import narwhals64.YeastBot.CardGames.GamePlayer;
 import narwhals64.YeastBot.CardGames.PlayerTypes.PondscumPlayer;
 import narwhals64.YeastBot.GameInstance;
 import net.dv8tion.jda.api.entities.*;
@@ -43,8 +44,20 @@ public class Pondscum extends GameInstance {
     public void addPlayer(PondscumPlayer newPlayer) {
         waitingList.add(newPlayer);
     }
+
+    /**
+     * Create a player from a Discord user, then add it to the waiting list.
+     * Do not add if there is already a player with that ID.
+     * @param newPlayer
+     */
     public void addPlayer(User newPlayer) {
-        addPlayer(new PondscumPlayer(newPlayer.getId().toString()));
+        boolean doNotAdd = false;
+        for (GamePlayer gp : players) {
+            if (gp.getId().equals(newPlayer.getId()))
+                doNotAdd = true;
+        }
+        if (!doNotAdd)
+            addPlayer(new PondscumPlayer(newPlayer.getId().toString()));
     }
 
     /**

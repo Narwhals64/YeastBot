@@ -2,10 +2,10 @@ package narwhals64.YeastBot;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import javax.security.auth.login.LoginException;
 
+import narwhals64.YeastBot.CardGames.GamePlayer;
 import narwhals64.YeastBot.Commands.*;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -19,7 +19,7 @@ public class YeastBot {
 	public static ArrayList<YeastBotProfile> profiles = new ArrayList<>();
 
 	public static ArrayList<GameInstance> gameInstances;
-	public static
+	public static ArrayList<GamePlayer> gamePlayers;
 
 	public static boolean useYeastBotProfiles = false;
 	
@@ -41,7 +41,6 @@ public class YeastBot {
 		builder.addEventListeners(new Inv());
 		builder.addEventListeners(new Shop());
 
-		builder.addEventListeners(new ShuffleDeck());
 		builder.addEventListeners(new JoinGame());
 
 		builder.addEventListeners(new Fish());

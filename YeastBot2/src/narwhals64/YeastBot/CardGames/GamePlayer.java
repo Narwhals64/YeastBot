@@ -1,4 +1,4 @@
-package narwhals64.YeastBot;
+package narwhals64.YeastBot.CardGames;
 
 /**
  * The Player of a Game.
