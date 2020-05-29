@@ -18,4 +18,8 @@ public abstract class GameInstance {
     public String toString() {
         return name;
     }
+
+    public String displayCurrentState() {
+        return "This game exists.";
+    }
 }

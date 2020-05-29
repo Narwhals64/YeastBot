@@ -37,6 +37,22 @@ public class Pondscum extends GameInstance {
         TOTAL_PONDSCUM_GAMES++;
     }
 
+    public Pondscum(GuildMessageReceivedEvent event, User creator) {
+        super("Pondscum Game #" + (TOTAL_PONDSCUM_GAMES+1));
+
+        host = new PondscumPlayer(creator.getId());
+        players = new ArrayList<>();
+        waitingList = new ArrayList<>();
+        allPlayersNormal = true;
+
+        guild = event.getGuild();
+        channel = event.getChannel();
+
+        curPlayerIndex = 0;
+
+        TOTAL_PONDSCUM_GAMES++;
+    }
+
     /**
      * Add a player to the waiting list.
      * @param newPlayer PondscumPlayer to be added.
@@ -52,10 +68,18 @@ public class Pondscum extends GameInstance {
      */
     public void addPlayer(User newPlayer) {
         boolean doNotAdd = false;
-        for (GamePlayer gp : players) {
+
+        if (host.getId().equals(newPlayer.getId()))
+            doNotAdd = true;
+
+        for (GamePlayer gp : players)
             if (gp.getId().equals(newPlayer.getId()))
                 doNotAdd = true;
-        }
+
+        for (GamePlayer gp : waitingList)
+            if (gp.getId().equals(newPlayer.getId()))
+                doNotAdd = true;
+
         if (!doNotAdd)
             addPlayer(new PondscumPlayer(newPlayer.getId().toString()));
     }
@@ -88,6 +112,28 @@ public class Pondscum extends GameInstance {
         */
 
         joinPlayers();
+
+    }
+
+
+    public String displayCurrentState() {
+        String output = "";
+
+        output += "The host is " + guild.getMemberById(host.getId()).getNickname() + ".\n";
+
+        output += "Other players: ";
+        for (GamePlayer gp : players) {
+            output += guild.getMemberById(gp.getId()).getNickname() + " ";
+        }
+        output += "\n";
+
+        output += "In the waiting list: ";
+        for (GamePlayer gp : waitingList) {
+            output += guild.getMemberById(gp.getId()).getNickname() + " ";
+        }
+        output += "\n";
+
+        return output;
 
     }
 

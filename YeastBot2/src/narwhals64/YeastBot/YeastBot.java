@@ -41,6 +41,7 @@ public class YeastBot {
 		builder.addEventListeners(new Inv());
 		builder.addEventListeners(new Shop());
 
+		builder.addEventListeners(new Game());
 		builder.addEventListeners(new JoinGame());
 
 		builder.addEventListeners(new Fish());
