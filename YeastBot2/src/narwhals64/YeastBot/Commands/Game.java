@@ -15,13 +15,15 @@ public class Game extends ListenerAdapter {
 
             int arguments = args.length;
 
-            if (arguments == 1) { // "g" --> list available games
-                String output = "**Available Games:**";
-                int index = 0;
-                for (GameInstance gi : YeastBot.gameInstances) {
-                    index++;
-                    output += "\n(" + index + ")  " + gi.toString();
-                }
+            if (arguments == 1) { // "g" --> list available commands
+                String output = "**Available Commands**\n";
+                output += "list = List all open games\n";
+                output += "join = Join a game (requires additional parameters)\n";
+                output += "create = Create a game (requires additional parameters)\n";
+                output += "view = View a particular game's current state (requires additional parameters)\n";
+                event.getChannel().sendMessage(output).queue();
+                output += "scope = Change your basic text scope to a particular game (requires additional parameters)\n" +
+                        "*Changing your basic text to be in a game's scope means your normal messages will be taken as commands within the game.  *,g s 0* will disable this.*";
                 event.getChannel().sendMessage(output).queue();
             }
 
@@ -33,8 +35,9 @@ public class Game extends ListenerAdapter {
                     String output = "**Available Games:**";
                     int index = 0;
                     for (GameInstance gi : YeastBot.gameInstances) {
-                        index++;
-                        output += "\n(" + index + ")  " + gi.toString();
+                        if (gi.isOpen()) {
+                            output += "\n" + gi.getGameIndex() + ": " + gi.getName();
+                        }
                     }
                     event.getChannel().sendMessage(output).queue();
                 }
@@ -74,6 +77,12 @@ public class Game extends ListenerAdapter {
                     catch (Exception e) {
 
                     }
+                }
+
+                else if (param2.equalsIgnoreCase("scope") || param2.equalsIgnoreCase("s")) {
+
+
+
                 }
 
             }

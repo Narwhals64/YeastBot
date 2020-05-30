@@ -2,6 +2,7 @@ package narwhals64.YeastBot;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.security.auth.login.LoginException;
 
@@ -19,7 +20,7 @@ public class YeastBot {
 	public static ArrayList<YeastBotProfile> profiles = new ArrayList<>();
 
 	public static ArrayList<GameInstance> gameInstances;
-	public static ArrayList<GamePlayer> gamePlayers;
+	public static HashMap<Long, Integer> gameScopes;
 
 	public static boolean useYeastBotProfiles = false;
 	
@@ -42,7 +43,6 @@ public class YeastBot {
 		builder.addEventListeners(new Shop());
 
 		builder.addEventListeners(new Game());
-		builder.addEventListeners(new JoinGame());
 
 		builder.addEventListeners(new Fish());
 		

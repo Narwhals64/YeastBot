@@ -9,8 +9,6 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import java.util.ArrayList;
 
 public class Pondscum extends GameInstance {
-    public static int TOTAL_PONDSCUM_GAMES = 0;
-
     private PondscumPlayer host;
     private ArrayList<PondscumPlayer> players; // at first, this is not ordered.  After the first game, it is ordered.
     private ArrayList<PondscumPlayer> waitingList; // waiting list for new players.  Each new player pushes the rest of the players up, thus becoming the next Pondscum.
@@ -22,7 +20,7 @@ public class Pondscum extends GameInstance {
     private int curPlayerIndex;
 
     public Pondscum(GuildMessageReceivedEvent event) {
-        super("Pondscum Game #" + (TOTAL_PONDSCUM_GAMES+1));
+        super("Pondscum Game #" + (GAME_INDEX_COUNTER+1));
 
         host = null;
         players = new ArrayList<>();
@@ -33,12 +31,10 @@ public class Pondscum extends GameInstance {
         channel = event.getChannel();
 
         curPlayerIndex = 0;
-
-        TOTAL_PONDSCUM_GAMES++;
     }
 
     public Pondscum(GuildMessageReceivedEvent event, User creator) {
-        super("Pondscum Game #" + (TOTAL_PONDSCUM_GAMES+1));
+        super("Pondscum Game #" + (GAME_INDEX_COUNTER+1));
 
         host = new PondscumPlayer(creator.getId());
         players = new ArrayList<>();
@@ -49,8 +45,6 @@ public class Pondscum extends GameInstance {
         channel = event.getChannel();
 
         curPlayerIndex = 0;
-
-        TOTAL_PONDSCUM_GAMES++;
     }
 
     /**
@@ -80,8 +74,13 @@ public class Pondscum extends GameInstance {
             if (gp.getId().equals(newPlayer.getId()))
                 doNotAdd = true;
 
-        if (!doNotAdd)
+        if (!doNotAdd) {
             addPlayer(new PondscumPlayer(newPlayer.getId().toString()));
+            channel.sendMessage("A player was successfully added to the Waiting List!  You will join in the next round.").queue();
+        }
+        else {
+            channel.sendMessage("The player could not be added to the Waiting List.  You may already be in the game!").queue();
+        }
     }
 
     /**
