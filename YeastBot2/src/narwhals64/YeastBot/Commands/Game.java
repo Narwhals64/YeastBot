@@ -81,7 +81,23 @@ public class Game extends ListenerAdapter {
 
                 else if (param2.equalsIgnoreCase("scope") || param2.equalsIgnoreCase("s")) {
 
+                    try {
+                        int param3 = Integer.parseInt(args[2]) - 1;
 
+                        if (param3 == -1) { // if 0 is entered
+                            YeastBot.gameScopes.put(event.getAuthor().getId(),param3);
+                        }
+                        else if (!YeastBot.gameInstances.get(param3).isOpen()) { // if the game is closed
+                            event.getChannel().sendMessage("That game is closed.  There's no need to set your scope to it!");
+                        }
+                        else {
+                            YeastBot.gameScopes.put(event.getAuthor().getId(),param3);
+                        }
+
+                    }
+                    catch (Exception e) {
+                        event.getChannel().sendMessage("Sorry, but there was some sort of error in that scope command.");
+                    }
 
                 }
 

@@ -13,7 +13,20 @@ public class BasicText extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 
 
+        String message = event.getMessage().getContentRaw();
 
+        if (message.charAt(0) != ',') {
+            try {
+                int scope = YeastBot.gameScopes.get(event.getAuthor().getId());
+
+                if (scope != -1)
+                    YeastBot.gameInstances.get(scope).enterCommand(message);
+
+
+            } catch (Exception e) {}
+
+
+        }
 
 
 

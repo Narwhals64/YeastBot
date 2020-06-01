@@ -20,7 +20,7 @@ public class YeastBot {
 	public static ArrayList<YeastBotProfile> profiles = new ArrayList<>();
 
 	public static ArrayList<GameInstance> gameInstances;
-	public static HashMap<Long, Integer> gameScopes;
+	public static HashMap<String, Integer> gameScopes;
 
 	public static boolean useYeastBotProfiles = false;
 	

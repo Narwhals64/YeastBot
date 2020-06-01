@@ -35,6 +35,13 @@ public abstract class GameInstance {
 
     public abstract void addPlayer(User newPlayer);
 
+
+    public void enterCommand(String com) {
+
+    }
+
+
+
     public String toString() {
         return name;
     }

@@ -115,6 +115,13 @@ public class Pondscum extends GameInstance {
     }
 
 
+
+    public void enterCommand(String com) {
+        System.out.println("command is working");
+    }
+
+
+
     public String displayCurrentState() {
         String output = "";
 
