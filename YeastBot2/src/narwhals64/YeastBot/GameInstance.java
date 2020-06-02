@@ -1,6 +1,8 @@
 package narwhals64.YeastBot;
 
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public abstract class GameInstance {
     public static int GAME_INDEX_COUNTER = 0; // a counter for the amount of games that have been run so far.
@@ -33,7 +35,7 @@ public abstract class GameInstance {
         return open;
     }
 
-    public abstract void addPlayer(User newPlayer);
+    public abstract void addPlayer(GuildMessageReceivedEvent event);
 
 
     public void enterCommand(String com) {

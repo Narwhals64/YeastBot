@@ -29,9 +29,9 @@ public class Game extends ListenerAdapter {
 
             else if (arguments > 1) {
 
-                String param2 = args[1];
+                String param1 = args[1];
 
-                if (param2.equalsIgnoreCase("list") || param2.equalsIgnoreCase("l")) {
+                if (param1.equalsIgnoreCase("list") || param1.equalsIgnoreCase("l")) {
                     String output = "**Available Games:**";
                     int index = 0;
                     for (GameInstance gi : YeastBot.gameInstances) {
@@ -42,12 +42,12 @@ public class Game extends ListenerAdapter {
                     event.getChannel().sendMessage(output).queue();
                 }
 
-                else if (param2.equalsIgnoreCase("join") || param2.equalsIgnoreCase("j")) {
+                else if (param1.equalsIgnoreCase("join") || param1.equalsIgnoreCase("j")) {
 
                     try {
                         int gameToJoin = Integer.parseInt(args[2]) - 1;
 
-                        YeastBot.gameInstances.get(gameToJoin).addPlayer(event.getAuthor());
+                        YeastBot.gameInstances.get(gameToJoin).addPlayer(event);
 
                     }
                     catch (Exception e) {
@@ -55,7 +55,7 @@ public class Game extends ListenerAdapter {
                     }
                 }
 
-                else if (param2.equalsIgnoreCase("create") || param2.equals("c")) {
+                else if (param1.equalsIgnoreCase("create") || param1.equals("c")) {
 
                     if (arguments > 2) {
 
@@ -68,7 +68,7 @@ public class Game extends ListenerAdapter {
 
                 }
 
-                else if (param2.equalsIgnoreCase("view") || param2.equalsIgnoreCase("v")) {
+                else if (param1.equalsIgnoreCase("view") || param1.equalsIgnoreCase("v")) {
                     try {
                         int gameToJoin = Integer.parseInt(args[2]) - 1;
 
@@ -79,24 +79,28 @@ public class Game extends ListenerAdapter {
                     }
                 }
 
-                else if (param2.equalsIgnoreCase("scope") || param2.equalsIgnoreCase("s")) {
+                else if (param1.equalsIgnoreCase("scope") || param1.equalsIgnoreCase("s")) {
 
                     try {
-                        int param3 = Integer.parseInt(args[2]) - 1;
+                        String param2 = args[2];
 
-                        if (param3 == -1) { // if 0 is entered
-                            YeastBot.gameScopes.put(event.getAuthor().getId(),param3);
+                        int scope = Integer.parseInt(param2) - 1;
+
+                        if (scope == -1) { // if 0 is entered
+                            YeastBot.gameScopes.put(event.getAuthor().getId(),scope);
                         }
-                        else if (!YeastBot.gameInstances.get(param3).isOpen()) { // if the game is closed
-                            event.getChannel().sendMessage("That game is closed.  There's no need to set your scope to it!");
+                        else if (!YeastBot.gameInstances.get(scope).isOpen()) { // if the game is closed
+                            event.getChannel().sendMessage("That game is closed.  There's no need to set your scope to it!").queue();
                         }
                         else {
-                            YeastBot.gameScopes.put(event.getAuthor().getId(),param3);
+                            YeastBot.gameScopes.put(event.getAuthor().getId(),scope);
+                            event.getChannel().sendMessage("Your scope has been set!").queue();
                         }
 
                     }
                     catch (Exception e) {
-                        event.getChannel().sendMessage("Sorry, but there was some sort of error in that scope command.");
+                        e.printStackTrace();
+                        event.getChannel().sendMessage("Sorry, but there was some sort of error in that scope command.").queue();
                     }
 
                 }

@@ -15,7 +15,6 @@ public class Pondscum extends GameInstance {
     private boolean allPlayersNormal; // for the first game, all players are considered normal.
 
     Guild guild;
-    TextChannel channel;
 
     private int curPlayerIndex;
 
@@ -27,8 +26,6 @@ public class Pondscum extends GameInstance {
         waitingList = new ArrayList<>();
         allPlayersNormal = true;
 
-        guild = event.getGuild();
-        channel = event.getChannel();
 
         curPlayerIndex = 0;
     }
@@ -41,8 +38,6 @@ public class Pondscum extends GameInstance {
         waitingList = new ArrayList<>();
         allPlayersNormal = true;
 
-        guild = event.getGuild();
-        channel = event.getChannel();
 
         curPlayerIndex = 0;
     }
@@ -58,9 +53,10 @@ public class Pondscum extends GameInstance {
     /**
      * Create a player from a Discord user, then add it to the waiting list.
      * Do not add if there is already a player with that ID.
-     * @param newPlayer
+     * @param event Event that added the player
      */
-    public void addPlayer(User newPlayer) {
+    public void addPlayer(GuildMessageReceivedEvent event) {
+        PondscumPlayer newPlayer = new PondscumPlayer(event.getAuthor().getId());
         boolean doNotAdd = false;
 
         if (host.getId().equals(newPlayer.getId()))
@@ -76,10 +72,10 @@ public class Pondscum extends GameInstance {
 
         if (!doNotAdd) {
             addPlayer(new PondscumPlayer(newPlayer.getId().toString()));
-            channel.sendMessage("A player was successfully added to the Waiting List!  You will join in the next round.").queue();
+            event.getChannel().sendMessage("A player was successfully added to the Waiting List!  You will join in the next round.").queue();
         }
         else {
-            channel.sendMessage("The player could not be added to the Waiting List.  You may already be in the game!").queue();
+            event.getChannel().sendMessage("The player could not be added to the Waiting List.  You may already be in the game!").queue();
         }
     }
 
@@ -98,17 +94,7 @@ public class Pondscum extends GameInstance {
     }
 
     public void initializeRound() {
-        /*
-        for (PondscumPlayer player : players) {
-            Member member = guild.getMemberById(player.getId());
 
-            guild.createTextChannel("pondscum-" + player.getId()).
-                    addPermissionOverride(guild.getRoleById(240614349247479819L),null, Collections.singleton(Permission.MESSAGE_READ)).  // Set @everyone to not be able to read messages
-                    addPermissionOverride(member, Collections.singleton(Permission.MESSAGE_READ),null).                                  // Set the given player to read the new channel
-                    addPermissionOverride(member, Collections.singleton(Permission.MESSAGE_WRITE),null).queue();                         // Set the given player to write to the new channel
-
-        }
-        */
 
         joinPlayers();
 
@@ -117,7 +103,7 @@ public class Pondscum extends GameInstance {
 
 
     public void enterCommand(String com) {
-        System.out.println("command is working");
+
     }
 
 

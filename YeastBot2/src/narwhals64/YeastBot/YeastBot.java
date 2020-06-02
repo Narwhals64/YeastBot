@@ -51,6 +51,7 @@ public class YeastBot {
 		System.out.println("Loading Yeast Bot Profiles.");
 
 		gameInstances = new ArrayList<>();
+		gameScopes = new HashMap<>();
 
 	}
 
