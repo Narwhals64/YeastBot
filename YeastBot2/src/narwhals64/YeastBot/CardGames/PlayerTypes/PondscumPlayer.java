@@ -20,4 +20,9 @@ public class PondscumPlayer extends GamePlayer {
     }
 
 
+    public Hand getHand() {
+        return hand;
+    }
+
+
 }

@@ -6,6 +6,9 @@ import narwhals64.YeastBot.CardGames.Cards.StandardCard;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * A stack of cards in which the top card can be drawn and only the top card can be seen.
+ */
 public class Deck {
     private ArrayList<Card> deck = new ArrayList<>();
     public Deck() {
@@ -14,12 +17,32 @@ public class Deck {
                 deck.add(new StandardCard(i, j));
     }
 
+    /**
+     * Places a card on top
+     * @param card
+     */
+    public void topDeck(Card card) {
+        deck.add(0, card);
+    }
+
+    public int getAmt() {
+        return deck.size();
+    }
+
+    /**
+     * Takes a card from the top of the deck, thus removing it from the deck, and returns it.
+     * @return
+     */
+    public Card drawCard() {
+        return deck.remove(0);
+    }
+
     public void shuffle() {
         Collections.shuffle(deck);
     }
 
     /**
-     * "Physically" flips the Deck, meaning the card order is now reversed.
+     * "Physically" flips the Deck, meaning the card order is now reversed and the cards are facing the opposite direction.
      */
     public void flipDeck() {
         Collections.reverse(deck);
@@ -28,10 +51,6 @@ public class Deck {
     }
 
     public String toString() {
-        String output = "```";
-        for (Card c : deck)
-            output += c.toString();
-
-        return output + "```";
+        return deck.get(0).toString(); // only shows the top card
     }
 }

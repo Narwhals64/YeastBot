@@ -38,7 +38,7 @@ public abstract class GameInstance {
     public abstract void addPlayer(GuildMessageReceivedEvent event);
 
 
-    public void enterCommand(String com) {
+    public void enterCommand(GuildMessageReceivedEvent event) {
 
     }
 

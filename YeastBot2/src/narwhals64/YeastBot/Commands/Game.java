@@ -25,7 +25,7 @@ public class Game extends ListenerAdapter {
                 output += "scope = Change your basic text scope to a particular game (requires additional parameters)\n" +
                         "*Changing your basic text to be in a game's scope means your normal messages will be taken as commands within the game.  *,g s 0* will disable this.*";
                 event.getChannel().sendMessage(output).queue();
-            }
+            } // "g" --> List available commands.
 
             else if (arguments > 1) {
 
@@ -40,7 +40,7 @@ public class Game extends ListenerAdapter {
                         }
                     }
                     event.getChannel().sendMessage(output).queue();
-                }
+                } // "l" --> List running games.
 
                 else if (param1.equalsIgnoreCase("join") || param1.equalsIgnoreCase("j")) {
 
@@ -53,7 +53,7 @@ public class Game extends ListenerAdapter {
                     catch (Exception e) {
                         event.getChannel().sendMessage("Game not found.").queue(); //TODO real error message
                     }
-                }
+                } // "j" --> Join a game.
 
                 else if (param1.equalsIgnoreCase("create") || param1.equals("c")) {
 
@@ -62,11 +62,11 @@ public class Game extends ListenerAdapter {
                         String param3 = args[2];
 
                         if (param3.equalsIgnoreCase("pondscum") || param3.equalsIgnoreCase("ps")) {
-                            YeastBot.gameInstances.add(new Pondscum(event, event.getAuthor()));
+                            YeastBot.gameInstances.add(new Pondscum(event));
                         }
                     }
 
-                }
+                } // "c" --> Create a game.
 
                 else if (param1.equalsIgnoreCase("view") || param1.equalsIgnoreCase("v")) {
                     try {
@@ -77,7 +77,7 @@ public class Game extends ListenerAdapter {
                     catch (Exception e) {
 
                     }
-                }
+                } // "v" --> View more information about a particular game.
 
                 else if (param1.equalsIgnoreCase("scope") || param1.equalsIgnoreCase("s")) {
 
@@ -103,10 +103,9 @@ public class Game extends ListenerAdapter {
                         event.getChannel().sendMessage("Sorry, but there was some sort of error in that scope command.").queue();
                     }
 
-                }
+                } // "s" --> Change your scope to a particular game.
 
             }
-
         }
     }
 }

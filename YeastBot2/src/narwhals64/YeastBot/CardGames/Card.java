@@ -4,7 +4,7 @@ public abstract class Card {
     private int minorRank;
     private int majorRank;
     private boolean portrait;
-    private boolean faced;
+    private boolean faced; // true = face up
 
     public Card() {
         minorRank = 0;
@@ -15,6 +15,8 @@ public abstract class Card {
     public Card(int min, int maj) {
         minorRank = min;
         majorRank = maj;
+        portrait = true;
+        faced = true;
     }
 
     public int getMinorRank() {
