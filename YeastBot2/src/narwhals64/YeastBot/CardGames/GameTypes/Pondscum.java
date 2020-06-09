@@ -127,6 +127,9 @@ public class Pondscum extends GameInstance {
 
         } // second, distribute cards amongst players
 
+
+        currentlyPlaying = true;
+
         if (allPlayersNormal) { // if this is the first round then everyone is a normal and does not have to trade cards.
             Collections.shuffle(players);
             allPlayersNormal = false;
@@ -145,9 +148,6 @@ public class Pondscum extends GameInstance {
             curPlayerIndex = presIndex;
 
         } // ... or trade and make the president go first.
-
-        currentlyPlaying = true;
-
         channel.sendMessage("Pondscum has now started!\nWe will start on the President's turn.").queue();
 
 
@@ -203,11 +203,11 @@ public class Pondscum extends GameInstance {
                 output += guild.getMemberById(gp.getId()).getNickname() + " ";
         }
         output += "\n";
-
-        output += "In the waiting list: ";
         for (GamePlayer gp : waitingList) {
             output += guild.getMemberById(gp.getId()).getNickname() + " ";
         }
+
+        output += "In the waiting list: ";
         output += "\n";
 
         return output;
