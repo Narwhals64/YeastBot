@@ -62,6 +62,10 @@ public abstract class Card {
         faced = false;
     }
 
+    public boolean isEqualTo(String s) {
+        return false;
+    }
+
     public String toString() {
         if (faced)
             return "[" + minorRank + "," + majorRank + "]";

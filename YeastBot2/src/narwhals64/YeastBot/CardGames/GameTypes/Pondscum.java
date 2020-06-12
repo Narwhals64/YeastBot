@@ -3,6 +3,7 @@ package narwhals64.YeastBot.CardGames.GameTypes;
 import narwhals64.YeastBot.CardGames.Card;
 import narwhals64.YeastBot.CardGames.Cards.StandardCard;
 import narwhals64.YeastBot.CardGames.GamePlayer;
+import narwhals64.YeastBot.CardGames.Pile;
 import narwhals64.YeastBot.CardGames.PileTypes.Deck;
 import narwhals64.YeastBot.CardGames.PlayerTypes.PondscumPlayer;
 import narwhals64.YeastBot.GameInstance;
@@ -17,6 +18,9 @@ public class Pondscum extends GameInstance {
     private ArrayList<PondscumPlayer> players; // at first, this is not ordered.  After the first game, it is ordered.  First is prez, last is pondscum
     private ArrayList<PondscumPlayer> waitingList; // waiting list for new players.  Each new player pushes the rest of the players up, thus becoming the next Pondscum.
     private boolean allPlayersNormal; // for the first game, all players are considered normal.
+
+    private Deck discard;
+    private
 
     Guild guild;
     TextChannel channel;
@@ -182,11 +186,25 @@ public class Pondscum extends GameInstance {
             announcePlayerTurn();
         } // "t" --> Show whose turn it is.
         else { // consider anything else to be playing cards
-            String[] cardsToBePlayed = com.split("\\s+"); // separate the command by spaces.
-            
-            for (String s : cardsToBePlayed) {
+            String[] wantToPlay = com.split("\\s+"); // separate the command by spaces.
 
-            } // consider each string -- can they all be considered cards, and are they all of the same type?
+            PondscumPlayer player = getPlayer(event.getAuthor());
+            Pile cardsToBePlayed = new Pile();
+
+
+            for (String s : wantToPlay) {
+                cardsToBePlayed.addCard(player.getHand().takeCard(s));
+            } // make a pile out of the cards you are attempting to play.  if a card is not available, it will be a null value.
+
+            boolean canBePlayed = true;
+
+            for (int i = 0 ; i < cardsToBePlayed.getSize() ; i++) {
+                if (cardsToBePlayed.get(i) == null)
+                    canBePlayed = false;
+            } // check if any of the cards are null.  If they are null then the pile cannot be played.
+
+
+
         } // Anything else --> Play cards.
     }
 

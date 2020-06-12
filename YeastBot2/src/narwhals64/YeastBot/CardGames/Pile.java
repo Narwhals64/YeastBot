@@ -9,11 +9,70 @@ public class Pile {
         pile = new ArrayList<>();
     }
 
+
+    /**
+     * Get the card at index n.
+     * @param n index of card to return
+     * @return a Card.
+     */
+    public Card get(int n) {
+        return pile.get(n);
+    }
+    public Card getCard(int n) {
+        return pile.get(n);
+    }
+
+    /**
+     * Adds a card to the "top" of the pile.
+     * This would be index 0 of the ArrayList.
+     * @param c
+     */
+    public void topDeck(Card c) {
+        pile.add(0,c);
+    }
+
+    /**
+     * Removes a card at index n.
+     * @param n index of card to be removed.
+     * @return The Card that was removed.
+     */
+    public Card remove(int n) {
+        return pile.remove(n);
+    }
+
+    /**
+     * Return the size
+     * @return an int of the amount of cards in the pile
+     */
+    public int getSize() {
+        return pile.size();
+    }
+
+    /**
+     * Are all cards the same rank or a Joker?
+     */
+    public boolean allCardsSimilarRank() {
+        int localRank = -1;
+        for (Card c : pile) {
+            if (localRank == -1)
+                localRank = c.getMinorRank();
+            else if (c.getMinorRank() == -1)
+                ; // nothing
+            else if (c.getMinorRank() != localRank)
+                return false;
+        }
+        return true;
+    }
+
     /**
      * Simple AddCard method: adds a card to the pile ArrayList without concern for gameplay changes.
      * @param c Card to be added.
      */
     public void addCard(Card c) {
         pile.add(c);
+    }
+
+    public String toString() {
+        return "YeastBot.CardGames.Pile.java does not have a toString() method.";
     }
 }
