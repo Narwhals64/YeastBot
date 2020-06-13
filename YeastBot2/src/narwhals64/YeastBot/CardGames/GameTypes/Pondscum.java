@@ -157,11 +157,14 @@ public class Pondscum extends GameInstance {
 
     }
 
+    /**
+     * Send a message, pinging the player whose turn it currently is.
+     */
     public void announcePlayerTurn() {
         if (currentlyPlaying)
-            channel.sendMessage("It is " + guild.getMemberById(players.get(curPlayerIndex).getId()) + "'s turn!").queue();
+            channel.sendMessage("It is " + guild.getMemberById(players.get(curPlayerIndex).getId()).getAsMention() + "'s turn!").queue();
         else
-            channel.sendMessage("The game is not currently in play.").queue();
+            channel.sendMessage("The game is not currently in play or it is nobody's turn.").queue();
     }
 
     private void playCards(String com) {
@@ -202,6 +205,16 @@ public class Pondscum extends GameInstance {
                 if (cardsToBePlayed.get(i) == null)
                     canBePlayed = false;
             } // check if any of the cards are null.  If they are null then the pile cannot be played.
+
+            if (canBePlayed) {
+                while (cardsToBePlayed.getSize() != 0)
+                    discard.topDeck(cardsToBePlayed.remove(0));
+                curPlayerIndex = (curPlayerIndex + 1)%players.size();
+            } // if the cards can be played, then play them and proceed to the next player's turn.
+            else {
+                while (cardsToBePlayed.getSize() != 0)
+                    player.getHand().giveCard(cardsToBePlayed.remove(0));
+            } // if the cards cannot be played, then return them to the player's hand.
 
 
 
