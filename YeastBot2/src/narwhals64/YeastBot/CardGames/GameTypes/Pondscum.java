@@ -34,6 +34,7 @@ public class Pondscum extends GameInstance {
         host = new PondscumPlayer(event.getAuthor().getId());
         players = new ArrayList<>();
         waitingList = new ArrayList<>();
+        waitingList.add(host);
         allPlayersNormal = true;
 
         guild = event.getGuild();
@@ -103,8 +104,6 @@ public class Pondscum extends GameInstance {
         int wlsize = waitingList.size();
         for (int i = 0 ; i < wlsize ; i++) {
             players.add(waitingList.get(0)); // Move the first person from the waiting list to the bottom of the players list, thus making them pondscum.
-            if (players.size() == 1) // if there's one player then make him host
-                host = players.get(0);
             waitingList.remove(0); // now remove the player from the waitingList since they are in the game.
         }
     }
@@ -123,7 +122,7 @@ public class Pondscum extends GameInstance {
 
             deck.shuffle();
 
-            while (deck.getAmt() > players.size()) { // while cards can still be evenly distributed amongst players
+            while (deck.getAmt() >= players.size()) { // while cards can still be evenly distributed amongst players
                 for (PondscumPlayer pp : players) {
                     pp.getHand().giveCard(deck.drawCard());
                 }
@@ -152,6 +151,8 @@ public class Pondscum extends GameInstance {
             curPlayerIndex = presIndex;
 
         } // ... or trade and make the president go first.
+
+
         channel.sendMessage("Pondscum has now started!\nWe will start on the President's turn.").queue();
 
 
@@ -180,15 +181,14 @@ public class Pondscum extends GameInstance {
             initializeRound();
         } // "start" --> Start the game.
         else if (com.equalsIgnoreCase("hand") || com.equalsIgnoreCase("h")) {
-            event.getAuthor().openPrivateChannel().queue((channel) ->
-            {
-                channel.sendMessage(getPlayer(event.getAuthor()).getHand().toString()).queue();
-            });
+            event.getAuthor().openPrivateChannel().queue((channel) -> {
+                channel.sendMessage("```" + getPlayer(event.getAuthor()).getHand().toString() + "```").queue();
+            }); // Send a message displaying the player's hand.
         } // "h" --> Whisper your hand to you.
         else if (com.equalsIgnoreCase("turn") || com.equalsIgnoreCase("t")) {
             announcePlayerTurn();
         } // "t" --> Show whose turn it is.
-        else { // consider anything else to be playing cards
+        else { // consider anything else to be playing cards as long as it's the right player.
             String[] wantToPlay = com.split("\\s+"); // separate the command by spaces.
 
             PondscumPlayer player = getPlayer(event.getAuthor());

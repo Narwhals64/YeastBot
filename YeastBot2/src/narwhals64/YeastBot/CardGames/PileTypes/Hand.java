@@ -42,11 +42,11 @@ public class Hand extends Pile {
     }
 
     public String toString() {
-        String output = "```Hand: ";
+        String output = "Hand: ";
         int size = getSize();
         for (int i = 0 ; i < size ; i++) {
             output += get(i).toString() + " ";
         } // add each card to the output.
-        return output + "```";
+        return output;
     }
 }
