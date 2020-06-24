@@ -20,10 +20,9 @@ public class Pondscum extends GameInstance {
     private boolean allPlayersNormal; // for the first game, all players are considered normal.
 
     private Deck discard;
-    private
 
-    Guild guild;
-    TextChannel channel;
+    private Guild guild;
+    private TextChannel channel;
 
     private boolean currentlyPlaying;
     private int curPlayerIndex;
@@ -210,10 +209,13 @@ public class Pondscum extends GameInstance {
                 while (cardsToBePlayed.getSize() != 0)
                     discard.topDeck(cardsToBePlayed.remove(0));
                 curPlayerIndex = (curPlayerIndex + 1)%players.size();
+                System.out.println((curPlayerIndex + 1)%players.size());
             } // if the cards can be played, then play them and proceed to the next player's turn.
             else {
                 while (cardsToBePlayed.getSize() != 0)
                     player.getHand().giveCard(cardsToBePlayed.remove(0));
+                channel.sendMessage("Sorry, but those cards could not be played.");
+                System.out.println("penis");
             } // if the cards cannot be played, then return them to the player's hand.
 
 
