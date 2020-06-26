@@ -20,6 +20,8 @@ public class Deck extends Pile {
 
 
     public String toString() {
-        return get(0).toString(); // only shows the top card
+        if (getSize() != 0)
+            return get(0).toString(); // only shows the top card
+        return "[XX]";
     }
 }

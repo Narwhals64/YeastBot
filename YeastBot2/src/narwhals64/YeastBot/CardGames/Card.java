@@ -52,8 +52,9 @@ public abstract class Card {
     public boolean isFaceUp() {
         return faced;
     }
-    public void flip() {
+    public Card flip() {
         faced = !faced;
+        return this;
     }
     public void faceUp() {
         faced = true;

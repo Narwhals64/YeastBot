@@ -1,6 +1,5 @@
 package narwhals64.YeastBot.CardGames.GameTypes;
 
-import narwhals64.YeastBot.CardGames.Card;
 import narwhals64.YeastBot.CardGames.Cards.StandardCard;
 import narwhals64.YeastBot.CardGames.GamePlayer;
 import narwhals64.YeastBot.CardGames.Pile;
@@ -37,6 +36,7 @@ public class Pondscum extends GameInstance {
         super("Pondscum Game #" + (GAME_INDEX_COUNTER+1));
 
         host = new PondscumPlayer(event.getAuthor().getId());
+        finishedPlayers = new ArrayList<>();
         players = new ArrayList<>();
         waitingList = new ArrayList<>();
         waitingList.add(host);
@@ -159,14 +159,14 @@ public class Pondscum extends GameInstance {
                 heatPile.setGroupSizes(cardAmtNeeded);
 
                 while (cardsToBePlayed.getSize() > 0) {
-                    discard.topDeck(cardsToBePlayed.remove(0));
-                } // place the cards being played into the discard
+                    heatPile.topDeck(cardsToBePlayed.remove(0));
+                } // place the cards being played into the heat discard
                 if (valuePlayed == highestCard) { // if this is true, the "heat" is over.
                     resetCardMinValue();
                     heatPile.putOnto(discard);
                 } // either end the heat and start another heat with the person who just played ...
                 else {
-                    cardMinValue = valuePlayed;
+                    cardMinValue = (valuePlayed%13) + 1;
                     curPlayerIndex = (curPlayerIndex + 1)%players.size();
                 } // ... or don't do that
 
@@ -194,8 +194,8 @@ public class Pondscum extends GameInstance {
 
         if (true) {
             Deck deck = new Deck();
-            deck.topDeck(new StandardCard(0, 1));
-            deck.topDeck(new StandardCard(0, 2));
+            deck.topDeck(new StandardCard(0, 1).flip());
+            deck.topDeck(new StandardCard(0, 2).flip());
 
             deck.shuffle();
             deck.flipPile();
@@ -277,8 +277,8 @@ public class Pondscum extends GameInstance {
         if (currentlyPlaying) {
             String output = "";
             output += "```" + getName() + "\n";
-            output += "Game discard pile: " + discard.toString() + "\n";
-            output += "This round's discard pile: " + heatPile.toString() + "```";
+            output += "Round discard pile: " + discard.toString() + "\n";
+            output += "This heat's discard pile: " + heatPile.toString() + "```";
             output += guild.getMemberById(players.get(curPlayerIndex).getId()).getAsMention() + "'s turn - play a card " + getMinCardValueName() + " or higher!\n";
             channel.sendMessage(output).queue();
         }
