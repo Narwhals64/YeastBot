@@ -3,6 +3,49 @@ package narwhals64.YeastBot.CardGames.Cards;
 import narwhals64.YeastBot.CardGames.Card;
 
 public class StandardCard extends Card {
+    /**
+     * Returns a String representing a card rank based on an int.
+     * @param n
+     * @return
+     */
+    public static String getValueFromInt(int n) {
+        if (n == 0)
+            return "?";
+        else if (n == 1 || n == 14)
+            return "A";
+        else if (n >= 2 && n <= 9)
+            return "" + n;
+        else if (n == 10)
+            return "F";
+        else if (n == 11)
+            return "J";
+        else if (n == 12)
+            return "Q";
+        else if (n == 13)
+            return "K";
+        else
+            return "ERROR";
+    }
+
+    public static String getFullNameFromInt(int n) {
+        if (n == 0)
+            return "Joker";
+        else if (n == 1 || n == 14)
+            return "Ace";
+        else if (n >= 2 && n <= 9)
+            return "" + n;
+        else if (n == 10)
+            return "10";
+        else if (n == 11)
+            return "Jack";
+        else if (n == 12)
+            return "Queen";
+        else if (n == 13)
+            return "King";
+        else
+            return "ERROR";
+    }
+
 
     public StandardCard() {
         super();

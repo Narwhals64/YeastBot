@@ -5,6 +5,7 @@ import narwhals64.YeastBot.CardGames.Cards.StandardCard;
 import narwhals64.YeastBot.CardGames.GamePlayer;
 import narwhals64.YeastBot.CardGames.Pile;
 import narwhals64.YeastBot.CardGames.PileTypes.Deck;
+import narwhals64.YeastBot.CardGames.PileTypes.MessyPile;
 import narwhals64.YeastBot.CardGames.PlayerTypes.PondscumPlayer;
 import narwhals64.YeastBot.GameInstance;
 import net.dv8tion.jda.api.entities.*;
@@ -19,13 +20,17 @@ public class Pondscum extends GameInstance {
     private ArrayList<PondscumPlayer> waitingList; // waiting list for new players.  Each new player pushes the rest of the players up, thus becoming the next Pondscum.
     private boolean allPlayersNormal; // for the first game, all players are considered normal.
 
+    private MessyPile roundPile;
     private Deck discard;
 
     private Guild guild;
     private TextChannel channel;
 
+    private int highestCard; // card with the highest value.  Default is 3.  Everything below it, looping around from 2-Ace-King, is "lesser" than the highest card value
     private boolean currentlyPlaying;
     private int curPlayerIndex;
+    private int cardMinValue; // the current minimum value for a card to be played.  By default, played cards must be HIGHER than this value.
+    private boolean allowDupeValues; // regarding the previous int, does this game allow players to play a card equal to the last card played?  By default, no.
 
     public Pondscum(GuildMessageReceivedEvent event) {
         super("Pondscum Game #" + (GAME_INDEX_COUNTER+1));
@@ -36,11 +41,17 @@ public class Pondscum extends GameInstance {
         waitingList.add(host);
         allPlayersNormal = true;
 
+        roundPile = new MessyPile();
+        discard = new Deck();
+
         guild = event.getGuild();
         channel = event.getChannel();
 
+        highestCard = 3;
         currentlyPlaying = false;
         curPlayerIndex = 0;
+        cardMinValue = 0;
+        allowDupeValues = false;
     }
 
     /**
@@ -161,15 +172,22 @@ public class Pondscum extends GameInstance {
      * Send a message, pinging the player whose turn it currently is.
      */
     public void announcePlayerTurn() {
-        if (currentlyPlaying)
-            channel.sendMessage("It is " + guild.getMemberById(players.get(curPlayerIndex).getId()).getAsMention() + "'s turn!").queue();
+        if (currentlyPlaying) {
+            String output = "";
+            output += "```" + getName();
+            output += "Game discard pile: " + discard.toString() + "\n";
+            output += "This round's discard pile: " + roundPile.toString() + "\n";
+            output += "\n";
+            output += guild.getMemberById(players.get(curPlayerIndex).getId()).getAsMention() + "'s turn - play a card " + getMinCardValueName() + " or higher!\n";
+            channel.sendMessage(output).queue();
+        }
         else
             channel.sendMessage("The game is not currently in play or it is nobody's turn.").queue();
     }
-
-    private void playCards(String com) {
-
+    private String getMinCardValueName() {
+        return StandardCard.getFullNameFromInt(cardMinValue);
     }
+
 
 
 
@@ -187,7 +205,7 @@ public class Pondscum extends GameInstance {
         else if (com.equalsIgnoreCase("turn") || com.equalsIgnoreCase("t")) {
             announcePlayerTurn();
         } // "t" --> Show whose turn it is.
-        else { // consider anything else to be playing cards as long as it's the right player.
+        else if (event.getAuthor().getId().equals(players.get(curPlayerIndex).getId())){ // consider anything else to be playing cards as long as it's the right player.
             String[] wantToPlay = com.split("\\s+"); // separate the command by spaces.
 
             PondscumPlayer player = getPlayer(event.getAuthor());
@@ -205,22 +223,42 @@ public class Pondscum extends GameInstance {
                     canBePlayed = false;
             } // check if any of the cards are null.  If they are null then the pile cannot be played.
 
+            if (!cardsToBePlayed.allCardsSimilarRank()) {
+                canBePlayed = false;
+            } // check if the cards are of similar rank.  If they are not then they cannot be played.
+
+
+
             if (canBePlayed) {
-                while (cardsToBePlayed.getSize() != 0)
+                while (cardsToBePlayed.getSize() > 0) {
                     discard.topDeck(cardsToBePlayed.remove(0));
+                }
                 curPlayerIndex = (curPlayerIndex + 1)%players.size();
-                System.out.println((curPlayerIndex + 1)%players.size());
             } // if the cards can be played, then play them and proceed to the next player's turn.
             else {
                 while (cardsToBePlayed.getSize() != 0)
                     player.getHand().giveCard(cardsToBePlayed.remove(0));
-                channel.sendMessage("Sorry, but those cards could not be played.");
-                System.out.println("penis");
+                channel.sendMessage("Sorry, but those cards could not be played.").queue();
             } // if the cards cannot be played, then return them to the player's hand.
 
 
 
-        } // Anything else --> Play cards.
+        } // Anything else --> Play cards (if cur player).
+    }
+
+    /**
+     * Test a value to see if it's acceptable via the rules of Pondscum
+     * @param n Value to be tested.
+     * @return true if the given value is "greater" than the current required value, i.e. acceptable.
+     */
+    private boolean psAcceptableValue(int n) {
+        int min = cardMinValue;
+        int max = highestCard;
+        if (min == max)
+            return n == min;
+        if (min > max)
+            max += 13;
+        return false; // TODO
     }
 
 
