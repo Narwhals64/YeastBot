@@ -16,11 +16,12 @@ import java.util.Collections;
 
 public class Pondscum extends GameInstance {
     private PondscumPlayer host;
+    private ArrayList<PondscumPlayer> finishedPlayers; // when a player is finished with his hand, he goes here.
     private ArrayList<PondscumPlayer> players; // at first, this is not ordered.  After the first game, it is ordered.  First is prez, last is pondscum
     private ArrayList<PondscumPlayer> waitingList; // waiting list for new players.  Each new player pushes the rest of the players up, thus becoming the next Pondscum.
     private boolean allPlayersNormal; // for the first game, all players are considered normal.
 
-    private MessyPile roundPile;
+    private MessyPile heatPile;
     private Deck discard;
 
     private Guild guild;
@@ -29,8 +30,8 @@ public class Pondscum extends GameInstance {
     private int highestCard; // card with the highest value.  Default is 3.  Everything below it, looping around from 2-Ace-King, is "lesser" than the highest card value
     private boolean currentlyPlaying;
     private int curPlayerIndex;
-    private int cardMinValue; // the current minimum value for a card to be played.  By default, played cards must be HIGHER than this value.
-    private boolean allowDupeValues; // regarding the previous int, does this game allow players to play a card equal to the last card played?  By default, no.
+    private int cardMinValue; // the current minimum value for a card to be played.  Played cards must be this value or higher.
+    private int cardAmtNeeded; // the amount of cards needed to play in this heat.
 
     public Pondscum(GuildMessageReceivedEvent event) {
         super("Pondscum Game #" + (GAME_INDEX_COUNTER+1));
@@ -41,7 +42,7 @@ public class Pondscum extends GameInstance {
         waitingList.add(host);
         allPlayersNormal = true;
 
-        roundPile = new MessyPile();
+        heatPile = new MessyPile();
         discard = new Deck();
 
         guild = event.getGuild();
@@ -51,7 +52,7 @@ public class Pondscum extends GameInstance {
         currentlyPlaying = false;
         curPlayerIndex = 0;
         cardMinValue = 0;
-        allowDupeValues = false;
+        cardAmtNeeded = 0;
     }
 
     /**
@@ -91,106 +92,14 @@ public class Pondscum extends GameInstance {
         }
     }
 
-    /**
-     * Find a player in the players ArrayList using a Discord User.
-     * @param user Discord User object.
-     * @return PondscumPlayer object.
-     */
-    private PondscumPlayer getPlayer(User user) {
-        for (PondscumPlayer pp : players) {
-            if (pp.getId().equals(user.getId())) {
-                return pp;
-            }
-        }
-        return null;
-    }
+
+
 
 
     /**
-     * Insert all players in the waiting list into the player list.
-     * Each player is moved to the bottom of the player list, making them automatically Pondscum.
+     * Enter a command into the game.  The brains of the operation.
+     * @param event The event of the message being sent.
      */
-    public void joinPlayers() {
-        int wlsize = waitingList.size();
-        for (int i = 0 ; i < wlsize ; i++) {
-            players.add(waitingList.get(0)); // Move the first person from the waiting list to the bottom of the players list, thus making them pondscum.
-            waitingList.remove(0); // now remove the player from the waitingList since they are in the game.
-        }
-    }
-
-    /**
-     * Start the round, as in set it up for play.  One round refers to the playing of the cards until a new roster of pres, VP, etc. is created.
-     */
-    public void initializeRound() {
-
-        joinPlayers(); // first, make everyone join the player list
-
-        if (true) {
-            Deck deck = new Deck();
-            deck.topDeck(new StandardCard(0, 1));
-            deck.topDeck(new StandardCard(0, 2));
-
-            deck.shuffle();
-
-            while (deck.getAmt() >= players.size()) { // while cards can still be evenly distributed amongst players
-                for (PondscumPlayer pp : players) {
-                    pp.getHand().giveCard(deck.drawCard());
-                }
-            }
-
-        } // second, distribute cards amongst players
-
-
-        currentlyPlaying = true;
-
-        if (allPlayersNormal) { // if this is the first round then everyone is a normal and does not have to trade cards.
-            Collections.shuffle(players);
-            allPlayersNormal = false;
-        } // third, either start the game without trading (if it's the first round) or ...
-        else { // otherwise, players must trade cards
-
-            String presId = players.get(0).getId(); // save president ID because pres goes first
-
-            Collections.shuffle(players);
-
-            int presIndex = 0;
-            for (int i = 0 ; i < players.size() ; i++)
-                if (players.get(i).getId().equals(presId))
-                    presIndex = i;
-
-            curPlayerIndex = presIndex;
-
-        } // ... or trade and make the president go first.
-
-
-        channel.sendMessage("Pondscum has now started!\nWe will start on the President's turn.").queue();
-
-
-    }
-
-    /**
-     * Send a message, pinging the player whose turn it currently is.
-     */
-    public void announcePlayerTurn() {
-        if (currentlyPlaying) {
-            String output = "";
-            output += "```" + getName();
-            output += "Game discard pile: " + discard.toString() + "\n";
-            output += "This round's discard pile: " + roundPile.toString() + "\n";
-            output += "\n";
-            output += guild.getMemberById(players.get(curPlayerIndex).getId()).getAsMention() + "'s turn - play a card " + getMinCardValueName() + " or higher!\n";
-            channel.sendMessage(output).queue();
-        }
-        else
-            channel.sendMessage("The game is not currently in play or it is nobody's turn.").queue();
-    }
-    private String getMinCardValueName() {
-        return StandardCard.getFullNameFromInt(cardMinValue);
-    }
-
-
-
-
     public void enterCommand(GuildMessageReceivedEvent event) {
         String com = event.getMessage().getContentRaw();
 
@@ -216,24 +125,52 @@ public class Pondscum extends GameInstance {
                 cardsToBePlayed.addCard(player.getHand().takeCard(s));
             } // make a pile out of the cards you are attempting to play.  if a card is not available, it will be a null value.
 
+            // Test to see if the pile can be played
             boolean canBePlayed = true;
-
-            for (int i = 0 ; i < cardsToBePlayed.getSize() ; i++) {
+            int cardAmtPlayed = cardsToBePlayed.getSize();
+            for (int i = 0 ; i < cardAmtPlayed ; i++) {
                 if (cardsToBePlayed.get(i) == null)
                     canBePlayed = false;
             } // check if any of the cards are null.  If they are null then the pile cannot be played.
-
             if (!cardsToBePlayed.allCardsSimilarRank()) {
                 canBePlayed = false;
             } // check if the cards are of similar rank.  If they are not then they cannot be played.
+            if (cardAmtNeeded != 0 && cardAmtPlayed != cardAmtNeeded) { // if there is an amount of cards required for the round and that amount is not met
+                canBePlayed = false;
+            } // check if the amount of cards is viable
+            if (cardAmtPlayed < 1 || cardAmtPlayed > 4) {
+                canBePlayed = false;
+            } // check if the amount of cards is between one and four
 
+            // Now find the value that is being played.
+            int valuePlayed = highestCard; // Assume highest card.  Thus, if only jokers are played, they will be seen as highest card.
+            for (int i = 0 ; i < cardAmtPlayed ; i++) { // go through each card
+                if (cardsToBePlayed.get(i).getMinorRank() != 0) // skip the card if it is a joker
+                    valuePlayed = cardsToBePlayed.get(i).getMinorRank(); // set the value equal to the card
+            } // Find the played pile's value (all cards will be the same or jokers)
+
+            if (!checkAcceptableValue(valuePlayed)) {
+                canBePlayed = false;
+            } // check if the value played is acceptable
 
 
             if (canBePlayed) {
+                cardAmtNeeded = cardAmtPlayed; // if this was 0 before, then it has an actual amount now
+                heatPile.setGroupSizes(cardAmtNeeded);
+
                 while (cardsToBePlayed.getSize() > 0) {
                     discard.topDeck(cardsToBePlayed.remove(0));
-                }
-                curPlayerIndex = (curPlayerIndex + 1)%players.size();
+                } // place the cards being played into the discard
+                if (valuePlayed == highestCard) { // if this is true, the "heat" is over.
+                    resetCardMinValue();
+                    heatPile.putOnto(discard);
+                } // either end the heat and start another heat with the person who just played ...
+                else {
+                    cardMinValue = valuePlayed;
+                    curPlayerIndex = (curPlayerIndex + 1)%players.size();
+                } // ... or don't do that
+
+                checkWinner(); // either way, check to see if the person who played won
             } // if the cards can be played, then play them and proceed to the next player's turn.
             else {
                 while (cardsToBePlayed.getSize() != 0)
@@ -247,22 +184,182 @@ public class Pondscum extends GameInstance {
     }
 
     /**
+     * Start the round, as in set it up for play.  One round refers to the playing of the cards until a new roster of pres, VP, etc. is created.
+     */
+    private void initializeRound() {
+
+        joinPlayers(); // first, make everyone join the player list
+
+        cleanPlayers(); // second, clean all players
+
+        if (true) {
+            Deck deck = new Deck();
+            deck.topDeck(new StandardCard(0, 1));
+            deck.topDeck(new StandardCard(0, 2));
+
+            deck.shuffle();
+            deck.flipPile();
+
+            while (deck.getSize() >= players.size()) { // while cards can still be evenly distributed amongst players
+                for (PondscumPlayer pp : players) {
+                    pp.getHand().giveCard(deck.draw());
+                }
+            }
+
+        } // third, distribute cards to players
+
+        if (true) {
+            currentlyPlaying = true;
+            resetCardMinValue();
+            heatPile.setVisibleGroups(3);
+            heatPile.setGroupSizes(1);
+        } // fourth, reset all variables to begin the game.
+
+
+        if (allPlayersNormal) { // if this is the first round then everyone is a normal and does not have to trade cards.
+            Collections.shuffle(players);
+            allPlayersNormal = false;
+        } // fifth, either start the game without trading (if it's the first round) or ...
+        else { // otherwise, players must trade cards
+
+            String presId = players.get(0).getId(); // save president ID because pres goes first
+
+            Collections.shuffle(players);
+
+            int presIndex = 0;
+            for (int i = 0 ; i < players.size() ; i++)
+                if (players.get(i).getId().equals(presId))
+                    presIndex = i;
+
+            curPlayerIndex = presIndex;
+
+        } // ... or trade and make the president go first.
+
+
+        channel.sendMessage("Pondscum has now started!\nWe will start on the President's turn.").queue();
+
+
+    }
+    /**
+     * Insert all players in the waiting list into the player list.
+     * Each player is moved to the bottom of the player list, making them automatically Pondscum.
+     */
+    private void joinPlayers() {
+        int fpsize = finishedPlayers.size();
+        for (int i = 0 ; i < fpsize ; i++) {
+            players.add(finishedPlayers.remove(0));
+        } // in order, add players from the finished players list to the players list.
+        int wlsize = waitingList.size();
+        for (int i = 0 ; i < wlsize ; i++) {
+            players.add(waitingList.remove(0));
+        } // in order, add players from the waiting list to the players list
+    }
+    /**
+     * Clean the hands of every player.
+     */
+    private void cleanPlayers() {
+        for (PondscumPlayer pp : players) {
+            pp.getHand().clean();
+        }
+    }
+    /**
+     * Reset the minimum card value to its original state
+     */
+    private void resetCardMinValue() {
+        cardMinValue = (highestCard%13) + 1; // min value is the max value + 1, but loops around
+    }
+
+
+    /**
+     * Send a message, pinging the player whose turn it currently is.
+     */
+    private void announcePlayerTurn() {
+        if (currentlyPlaying) {
+            String output = "";
+            output += "```" + getName() + "\n";
+            output += "Game discard pile: " + discard.toString() + "\n";
+            output += "This round's discard pile: " + heatPile.toString() + "```";
+            output += guild.getMemberById(players.get(curPlayerIndex).getId()).getAsMention() + "'s turn - play a card " + getMinCardValueName() + " or higher!\n";
+            channel.sendMessage(output).queue();
+        }
+        else
+            channel.sendMessage("The game is not currently in play or it is nobody's turn.").queue();
+    }
+    /**
+     * Find the name of the value of the minimum card required to play
+     * @return String name of the card rank
+     */
+    private String getMinCardValueName() {
+        return StandardCard.getFullNameFromInt(cardMinValue);
+    }
+
+
+    /**
+     * Find a player in the players ArrayList using a Discord User.
+     * @param user Discord User object.
+     * @return PondscumPlayer object.
+     */
+    private PondscumPlayer getPlayer(User user) {
+        for (PondscumPlayer pp : players) {
+            if (pp.getId().equals(user.getId())) {
+                return pp;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Test a value to see if it's acceptable via the rules of Pondscum
      * @param n Value to be tested.
      * @return true if the given value is "greater" than the current required value, i.e. acceptable.
      */
-    private boolean psAcceptableValue(int n) {
+    private boolean checkAcceptableValue(int n) {
         int min = cardMinValue;
         int max = highestCard;
-        if (min == max)
+        if (min == max) // if the only card that can be played is the highest card, check if the played card is the highest card.
             return n == min;
-        if (min > max)
-            max += 13;
-        return false; // TODO
+
+        if (min > max) { // if the highest card is a lower number than the current minimum card, ...
+            max += 13; //   ... raise the highest card by 13 ...
+            n += 13; //     ... and raise n by 13.
+            /*
+            As an example, if the highest card is 3 and the current minimum card is 10, but someone plays an 8:
+                Raise the highest card by 13, making it 16.
+                Raise n by 13, making it 21.
+                We check to see if the played card (n) is between 10 and 16, inclusive.  It is not.
+            In the same example, let's say we played a Jack (11).
+                Raise the highest card by 13, making it 16.
+                Do not raise n because it was not below the lowest card (10).
+                We check to see if the played card (n) is between 10 and 16, inclusive.  It is.
+            In the same example, let's now play a 2.
+                Raise the highest card by 13, making it 16.
+                Raise n by 13, making it 15.
+                We check to see if the played card (n) is between 10 and 16, inclusive.  It is.
+             */ // <--- Explanation on this process.
+        } // raise the numbers if need be
+
+        return (n >= min || n <= max); // true if n is between min and max, inclusive.
+
+    }
+
+    /**
+     * Checks to see if there are any winners.
+     */
+    private void checkWinner() {
+        for (int i = 0 ; i < players.size() ; i++) { // cycle through the players list
+            if (players.get(i).getHand().getSize() == 0) { // if a player's hand is empty
+                channel.sendMessage(guild.getMemberById(players.get(curPlayerIndex).getId()).getAsMention() + "has finished!").queue();
+                finishedPlayers.add(players.remove(i)); // then remove them from the list and add them to the finished players list
+                i--; // also, subtract one from i to make it cycle through every player
+            }
+        }
     }
 
 
-
+    /**
+     * For the ,view command, this displays the current state of the game.
+     * @return String displaying the current state
+     */
     public String displayCurrentState() {
         String output = "";
 
@@ -284,6 +381,8 @@ public class Pondscum extends GameInstance {
         return output;
 
     }
+
+
 
 
 }

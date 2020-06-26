@@ -63,6 +63,7 @@ public class Game extends ListenerAdapter {
 
                         if (param3.equalsIgnoreCase("pondscum") || param3.equalsIgnoreCase("ps")) {
                             YeastBot.gameInstances.add(new Pondscum(event));
+                            event.getChannel().sendMessage("A new Pondscum game has successfully been created!").queue();
                         }
                     }
 

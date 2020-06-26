@@ -1,6 +1,7 @@
 package narwhals64.YeastBot.CardGames;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Pile {
     private ArrayList<Card> pile;
@@ -21,6 +22,9 @@ public class Pile {
     public Card getCard(int n) {
         return pile.get(n);
     }
+    public Card getBottomCard() {
+        return pile.get(pile.size() - 1);
+    }
 
     /**
      * Adds a card to the "top" of the pile.
@@ -31,6 +35,20 @@ public class Pile {
         pile.add(0,c);
     }
 
+    public Pile putOnto(Pile other) {
+        while (getSize() != 0)
+            other.topDeck(getBottomCard());
+        return other;
+    }
+
+    /**
+     * Remove the top card (index 0)
+     * @return The removed Card
+     */
+    public Card draw() {
+        return remove(0);
+    }
+
     /**
      * Removes a card at index n.
      * @param n index of card to be removed.
@@ -38,6 +56,31 @@ public class Pile {
      */
     public Card remove(int n) {
         return pile.remove(n);
+    }
+
+    /**
+     * Removes all cards.
+     * @return this object.
+     */
+    public Pile clean() {
+        pile.clear();
+        return this;
+    }
+
+    /**
+     * Computer-generated shuffling algorithm.
+     */
+    public void shuffle() {
+        Collections.shuffle(pile);
+    }
+
+    /**
+     * "Physically" flips the Deck, meaning the card order is now reversed and the cards are facing the opposite direction.
+     */
+    public void flipPile() {
+        Collections.reverse(pile);
+        for (Card c : pile)
+            c.flip();
     }
 
     /**

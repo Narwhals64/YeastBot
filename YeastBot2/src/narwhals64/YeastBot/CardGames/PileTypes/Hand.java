@@ -37,6 +37,10 @@ public class Hand extends Pile {
         return null;
     }
 
+    public Hand clean() {
+        return clean();
+    }
+
     public void sortHand() {
 
     }

@@ -17,6 +17,16 @@ public class MessyPile extends Pile {
     }
 
 
+    public void setVisibleGroups(int n) {
+        visibleGroups = n;
+    }
+
+    public void setGroupSizes(int n) {
+        groupSizes = n;
+    }
+
+
+
     /**
      * A display of the messy pile, showing groupings of cards that should be displayed.
      * @return
@@ -28,7 +38,8 @@ public class MessyPile extends Pile {
 
         for (int i = 0 ; i < visibleGroups ; i++) { // goes through each group
             for (int j = 0 ; j < groupSizes ; j++) { // goes through the card in each group
-                output += getCard(i + j); // add the String output of the card
+                if (i + j < getSize()) // if the card exists, ...
+                    output += getCard(i + j); // ... add the String output of the card
             }
             if (i != visibleGroups-1)
                 output += "\n"; // if not the last group, then start a new line as well after the end of the group

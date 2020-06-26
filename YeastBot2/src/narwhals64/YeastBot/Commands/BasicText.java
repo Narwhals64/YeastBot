@@ -26,12 +26,15 @@ public class BasicText extends ListenerAdapter {
 
 
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
 
             }
 
-        } catch(Exception e) {}
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
 
 
     }
