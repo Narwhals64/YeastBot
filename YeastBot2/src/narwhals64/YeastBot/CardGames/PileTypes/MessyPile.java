@@ -13,7 +13,7 @@ public class MessyPile extends Pile {
         super();
         visibleGroups = 3;
         groupSizes = 1;
-        showDeckCount = false;
+        showDeckCount = true;
     }
 
 
@@ -38,7 +38,7 @@ public class MessyPile extends Pile {
 
         for (int i = 0 ; i < visibleGroups ; i++) { // goes through each group
             for (int j = 0 ; j < groupSizes ; j++) { // goes through the card in each group
-                if (i + j < getSize()) // if the card exists, ...
+                if (i * groupSizes + j < getSize()) // if the card exists, ...
                     output += getCard(i + j); // ... add the String output of the card
             }
             if (i != visibleGroups-1)
