@@ -106,7 +106,11 @@ public class Pondscum extends GameInstance {
         String com = event.getMessage().getContentRaw();
 
         if (com.equalsIgnoreCase("start") && event.getAuthor().getId().equals(host.getId())) { // if host entered start
-            initializeRound();
+            if (!currentlyPlaying)
+                initializeRound();
+            else {
+                channel.sendMessage("The game is already in session.").queue();
+            }
         } // "start" --> Start the game.
         else if (com.equalsIgnoreCase("hand") || com.equalsIgnoreCase("h")) {
             event.getAuthor().openPrivateChannel().queue((channel) -> {
@@ -116,7 +120,7 @@ public class Pondscum extends GameInstance {
         else if (com.equalsIgnoreCase("turn") || com.equalsIgnoreCase("t")) {
             announcePlayerTurn();
         } // "t" --> Show whose turn it is.
-        else if (com.equalsIgnoreCase("pass") || com.equalsIgnoreCase("p")) {
+        else if ((com.equalsIgnoreCase("pass") || com.equalsIgnoreCase("p")) && event.getAuthor().getId().equals(players.get(curPlayerIndex).getId())) {
             if (firstPass == -1) { // if nobody has passed yet, then this pass is the first player in the streak to pass.
                 firstPass = curPlayerIndex;
             }
@@ -127,7 +131,7 @@ public class Pondscum extends GameInstance {
                 heatPile.putOnto(discard);
             }
             announcePlayerTurn();
-        }
+        } // "p" --> pass
         else if (event.getAuthor().getId().equals(players.get(curPlayerIndex).getId())){ // consider anything else to be playing cards as long as it's the right player.
             String[] wantToPlay = com.split("\\s+"); // separate the command by spaces.
 
@@ -242,7 +246,7 @@ public class Pondscum extends GameInstance {
 
         if (allPlayersNormal) { // if this is the first round then everyone is a normal and does not have to trade cards.
             Collections.shuffle(players);
-            allPlayersNormal = false;
+            //allPlayersNormal = false; TODO
         } // fifth, either start the game without trading (if it's the first round) or ...
         else { // otherwise, players must trade cards
 
@@ -356,10 +360,15 @@ public class Pondscum extends GameInstance {
     private void checkWinner() {
         for (int i = 0 ; i < players.size() ; i++) { // cycle through the players list
             if (players.get(i).getHand().getSize() == 0) { // if a player's hand is empty
-                channel.sendMessage(guild.getMemberById(players.get(curPlayerIndex).getId()).getAsMention() + "has finished!").queue();
+                channel.sendMessage(guild.getMemberById(players.get((curPlayerIndex - 1 + players.size()) % players.size()).getId()).getAsMention() + "has finished!").queue();
                 finishedPlayers.add(players.remove(i)); // then remove them from the list and add them to the finished players list
                 i--; // also, subtract one from i to make it cycle through every player
             }
+        }
+        if (players.size() == 1) {
+            finishedPlayers.add(players.remove(0));
+            currentlyPlaying = false;
+            channel.sendMessage("The game is now over!  Enter \"start\" to begin a new round!");
         }
     }
 
