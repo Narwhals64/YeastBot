@@ -31,6 +31,7 @@ public class Pondscum extends GameInstance {
     private int curPlayerIndex;
     private int cardMinValue; // the current minimum value for a card to be played.  Played cards must be this value or higher.
     private int cardAmtNeeded; // the amount of cards needed to play in this heat.
+    private int firstPass;
 
     public Pondscum(GuildMessageReceivedEvent event) {
         super("Pondscum Game #" + (GAME_INDEX_COUNTER+1));
@@ -53,6 +54,7 @@ public class Pondscum extends GameInstance {
         curPlayerIndex = 0;
         cardMinValue = 0;
         cardAmtNeeded = 0;
+        firstPass = -1;
     }
 
     /**
@@ -114,6 +116,17 @@ public class Pondscum extends GameInstance {
         else if (com.equalsIgnoreCase("turn") || com.equalsIgnoreCase("t")) {
             announcePlayerTurn();
         } // "t" --> Show whose turn it is.
+        else if (com.equalsIgnoreCase("pass") || com.equalsIgnoreCase("p")) {
+            if (firstPass == -1) { // if nobody has passed yet, then this pass is the first player in the streak to pass.
+                firstPass = curPlayerIndex;
+            }
+            curPlayerIndex = (curPlayerIndex + 1)%players.size(); // do not play any cards and have the next person take their turn
+            if (firstPass == curPlayerIndex) { // now, if it's the turn of the first person who started the passing streak, reset the minimum card value
+                resetCardMinValue(); // these are the same instructions as the "heat end" instructions for when cards are actually played.
+                heatPile.putOnto(discard);
+            }
+            announcePlayerTurn();
+        }
         else if (event.getAuthor().getId().equals(players.get(curPlayerIndex).getId())){ // consider anything else to be playing cards as long as it's the right player.
             String[] wantToPlay = com.split("\\s+"); // separate the command by spaces.
 
@@ -121,13 +134,19 @@ public class Pondscum extends GameInstance {
             Pile cardsToBePlayed = new Pile();
 
 
+            boolean canBePlayed = true;
+
+
             for (String s : wantToPlay) {
-                cardsToBePlayed.addCard(player.getHand().takeCard(s));
-            } // make a pile out of the cards you are attempting to play.  if a card is not available, it will be a null value.
+                if (player.getHand().canReveal(s))
+                    cardsToBePlayed.addCard(player.getHand().takeCard(s));
+                else
+                    canBePlayed = false;
+            } // make a pile out of the cards you are attempting to play.
 
             // Test to see if the pile can be played
-            boolean canBePlayed = true;
             int cardAmtPlayed = cardsToBePlayed.getSize();
+
             for (int i = 0 ; i < cardAmtPlayed ; i++) {
                 if (cardsToBePlayed.get(i) == null)
                     canBePlayed = false;
@@ -153,8 +172,10 @@ public class Pondscum extends GameInstance {
                 canBePlayed = false;
             } // check if the value played is acceptable
 
+            System.out.println()
 
             if (canBePlayed) {
+                firstPass = -1; // if someone played, then end the passing streak.
                 cardAmtNeeded = cardAmtPlayed; // if this was 0 before, then it has an actual amount now
                 heatPile.setGroupSizes(cardAmtNeeded);
 
@@ -171,6 +192,7 @@ public class Pondscum extends GameInstance {
                 } // ... or don't do that
 
                 checkWinner(); // either way, check to see if the person who played won
+                announcePlayerTurn();
             } // if the cards can be played, then play them and proceed to the next player's turn.
             else {
                 while (cardsToBePlayed.getSize() != 0)
@@ -338,6 +360,7 @@ public class Pondscum extends GameInstance {
              */ // <--- Explanation on this process.
         } // raise the numbers if need be
 
+        System.out.println("must be between " + min + " and " + max + ": " + n + ", " + (n >= min || n <= max)); //TODO
         return (n >= min || n <= max); // true if n is between min and max, inclusive.
 
     }

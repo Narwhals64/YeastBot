@@ -63,7 +63,33 @@ public abstract class Card {
         faced = false;
     }
 
+    /**
+     * By Standard Card rules, will return a boolean based on if the given String is equivalent to the actual rank of the card.
+     * @param s String to compare
+     * @return true if they are equal
+     */
     public boolean isEqualTo(String s) {
+        if (s.equals("" + getMinorRank())) {
+            return true;
+        }
+        if (s.equals("F") && getMinorRank() == 10) {
+            return true;
+        }
+        if (s.equals("J") && getMinorRank() == 11) {
+            return true;
+        }
+        if (s.equals("Q") && getMinorRank() == 12) {
+            return true;
+        }
+        if (s.equals("K") && getMinorRank() == 13) {
+            return true;
+        }
+        if (s.equals("A") && getMinorRank() == 14) {
+            return true;
+        }
+        if (s.equals("A") && getMinorRank() == 1) {
+            return true;
+        }
         return false;
     }
 

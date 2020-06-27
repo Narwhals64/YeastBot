@@ -37,6 +37,14 @@ public class Hand extends Pile {
         return null;
     }
 
+    public boolean canReveal(String s) {
+        for (int i = 0 ; i < getSize() ; i++) {
+            if (getCard(i).isEqualTo(s))
+                return true;
+        }
+        return false;
+    }
+
     public void sortHand() {
 
     }

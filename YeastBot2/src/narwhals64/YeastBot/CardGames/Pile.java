@@ -22,6 +22,9 @@ public class Pile {
     public Card getCard(int n) {
         return pile.get(n);
     }
+    public Card removeBottomCard() {
+        return pile.remove(pile.size() - 1);
+    }
     public Card getBottomCard() {
         return pile.get(pile.size() - 1);
     }
@@ -37,7 +40,7 @@ public class Pile {
 
     public Pile putOnto(Pile other) {
         while (getSize() != 0)
-            other.topDeck(getBottomCard());
+            other.topDeck(removeBottomCard());
         return other;
     }
 
