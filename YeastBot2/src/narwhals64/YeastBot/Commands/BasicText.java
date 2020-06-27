@@ -15,27 +15,20 @@ public class BasicText extends ListenerAdapter {
 
         String message = event.getMessage().getContentRaw();
 
-        try {
+        if (!message.startsWith(",") && !event.getAuthor().isBot()) {
+            try {
+                int scope = YeastBot.gameScopes.get(event.getAuthor().getId());
 
-            if (message.charAt(0) != ',') {
-                try {
-                    int scope = YeastBot.gameScopes.get(event.getAuthor().getId());
-
-                    if (scope != -1)
-                        YeastBot.gameInstances.get(scope).enterCommand(event);
+                if (scope != -1)
+                    YeastBot.gameInstances.get(scope).enterCommand(event);
 
 
-                } catch (Exception e) {
-                    //e.printStackTrace();
-                }
-
+            } catch (Exception e) {
 
             }
 
-        } catch(Exception e) {
-            //e.printStackTrace();
-        }
 
+        }
 
     }
 }

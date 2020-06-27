@@ -69,40 +69,35 @@ public class StandardCard extends Card {
     }
 
     /**
-     * Test a String to see if the card is representative of the String.
-     * Example: "3" is representative of a three of spades.
-     * Example: "F" is representative of a 10 of hearts, as is "10".
-     * Example: "1" is representative of an ace of spades, as is "1" and "A".
-     * @param str String to be tested.
-     * @return Whether it is representative or not.
+     * By Standard Card rules, will return a boolean based on if the given String is equivalent to the actual rank of the card.
+     * @param s String to compare
+     * @return true if they are equal
      */
-    public boolean isEqualTo(String str) {
-        if (str.equals("F") && getRank() == 10) {
+    public boolean isEqualTo(String s) {
+        if (s.equals("" + getMinorRank())) {
             return true;
-        } // ten
-        else if (str.equals("J") && getRank() == 11) {
+        }
+        if (s.equalsIgnoreCase("F") && getMinorRank() == 10) {
             return true;
-        } // jack
-        else if (str.equals("Q") && getRank() == 12) {
+        }
+        if (s.equalsIgnoreCase("J") && getMinorRank() == 11) {
             return true;
-        } // queen
-        else if (str.equals("K") && getRank() == 13) {
+        }
+        if (s.equalsIgnoreCase("Q") && getMinorRank() == 12) {
             return true;
-        } // king
-        else if ( ( str.equals("A")||str.equals("1") ) && ( getRank() == 1||getRank() == 14 ) ) {
+        }
+        if (s.equalsIgnoreCase("K") && getMinorRank() == 13) {
             return true;
-        } // ace
-        else {
-            try {
-                int attempt = Integer.parseInt(str);
-                if (getRank() == attempt) {
-                    return true;
-                }
-            }
-            catch (Exception e) {
-                return false;
-            }
-        } // 2-9
+        }
+        if (s.equalsIgnoreCase("A") && getMinorRank() == 14) {
+            return true;
+        }
+        if (s.equalsIgnoreCase("A") && getMinorRank() == 1) {
+            return true;
+        }
+        if (s.equalsIgnoreCase("?") && getMinorRank() == 0) {
+            return true;
+        }
         return false;
     }
 

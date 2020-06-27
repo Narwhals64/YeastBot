@@ -100,10 +100,10 @@ public class Pile {
     public boolean allCardsSimilarRank() {
         int localRank = -1;
         for (Card c : pile) {
-            if (localRank == -1)
-                localRank = c.getMinorRank();
-            else if (c.getMinorRank() == -1)
+            if (c.getMinorRank() == 0)
                 ; // nothing
+            else if (localRank == -1)
+                localRank = c.getMinorRank();
             else if (c.getMinorRank() != localRank)
                 return false;
         }

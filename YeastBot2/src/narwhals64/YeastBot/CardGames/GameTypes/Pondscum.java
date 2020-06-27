@@ -123,6 +123,7 @@ public class Pondscum extends GameInstance {
             curPlayerIndex = (curPlayerIndex + 1)%players.size(); // do not play any cards and have the next person take their turn
             if (firstPass == curPlayerIndex) { // now, if it's the turn of the first person who started the passing streak, reset the minimum card value
                 resetCardMinValue(); // these are the same instructions as the "heat end" instructions for when cards are actually played.
+                cardAmtNeeded = 0;
                 heatPile.putOnto(discard);
             }
             announcePlayerTurn();
@@ -136,14 +137,12 @@ public class Pondscum extends GameInstance {
 
             boolean canBePlayed = true;
 
-
             for (String s : wantToPlay) {
                 if (player.getHand().canReveal(s))
                     cardsToBePlayed.addCard(player.getHand().takeCard(s));
                 else
                     canBePlayed = false;
             } // make a pile out of the cards you are attempting to play.
-
             // Test to see if the pile can be played
             int cardAmtPlayed = cardsToBePlayed.getSize();
 
@@ -172,7 +171,6 @@ public class Pondscum extends GameInstance {
                 canBePlayed = false;
             } // check if the value played is acceptable
 
-            System.out.println()
 
             if (canBePlayed) {
                 firstPass = -1; // if someone played, then end the passing streak.
@@ -184,6 +182,7 @@ public class Pondscum extends GameInstance {
                 } // place the cards being played into the heat discard
                 if (valuePlayed == highestCard) { // if this is true, the "heat" is over.
                     resetCardMinValue();
+                    cardAmtNeeded = 0;
                     heatPile.putOnto(discard);
                 } // either end the heat and start another heat with the person who just played ...
                 else {
@@ -227,6 +226,9 @@ public class Pondscum extends GameInstance {
                     pp.getHand().giveCard(deck.draw());
                 }
             }
+            for (PondscumPlayer pp : players) {
+                pp.getHand().sortHand((highestCard%13)+1);
+            }
 
         } // third, distribute cards to players
 
@@ -259,6 +261,7 @@ public class Pondscum extends GameInstance {
 
 
         channel.sendMessage("Pondscum has now started!\nWe will start on the President's turn.").queue();
+        announcePlayerTurn();
 
 
     }
@@ -340,28 +343,10 @@ public class Pondscum extends GameInstance {
         int max = highestCard;
         if (min == max) // if the only card that can be played is the highest card, check if the played card is the highest card.
             return n == min;
-
-        if (min > max) { // if the highest card is a lower number than the current minimum card, ...
-            max += 13; //   ... raise the highest card by 13 ...
-            n += 13; //     ... and raise n by 13.
-            /*
-            As an example, if the highest card is 3 and the current minimum card is 10, but someone plays an 8:
-                Raise the highest card by 13, making it 16.
-                Raise n by 13, making it 21.
-                We check to see if the played card (n) is between 10 and 16, inclusive.  It is not.
-            In the same example, let's say we played a Jack (11).
-                Raise the highest card by 13, making it 16.
-                Do not raise n because it was not below the lowest card (10).
-                We check to see if the played card (n) is between 10 and 16, inclusive.  It is.
-            In the same example, let's now play a 2.
-                Raise the highest card by 13, making it 16.
-                Raise n by 13, making it 15.
-                We check to see if the played card (n) is between 10 and 16, inclusive.  It is.
-             */ // <--- Explanation on this process.
-        } // raise the numbers if need be
-
-        System.out.println("must be between " + min + " and " + max + ": " + n + ", " + (n >= min || n <= max)); //TODO
-        return (n >= min || n <= max); // true if n is between min and max, inclusive.
+        else if (min > max) // if min is greater than max, then the number line "loops," meaning only one condition has to be true.
+            return (n >= min || n <= max);
+        else // otherwise, calculate normally.
+            return (n >= min && n <= max);
 
     }
 

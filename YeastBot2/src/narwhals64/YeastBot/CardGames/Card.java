@@ -72,22 +72,22 @@ public abstract class Card {
         if (s.equals("" + getMinorRank())) {
             return true;
         }
-        if (s.equals("F") && getMinorRank() == 10) {
+        if (s.equalsIgnoreCase("F") && getMinorRank() == 10) {
             return true;
         }
-        if (s.equals("J") && getMinorRank() == 11) {
+        if (s.equalsIgnoreCase("J") && getMinorRank() == 11) {
             return true;
         }
-        if (s.equals("Q") && getMinorRank() == 12) {
+        if (s.equalsIgnoreCase("Q") && getMinorRank() == 12) {
             return true;
         }
-        if (s.equals("K") && getMinorRank() == 13) {
+        if (s.equalsIgnoreCase("K") && getMinorRank() == 13) {
             return true;
         }
-        if (s.equals("A") && getMinorRank() == 14) {
+        if (s.equalsIgnoreCase("A") && getMinorRank() == 14) {
             return true;
         }
-        if (s.equals("A") && getMinorRank() == 1) {
+        if (s.equalsIgnoreCase("A") && getMinorRank() == 1) {
             return true;
         }
         return false;
