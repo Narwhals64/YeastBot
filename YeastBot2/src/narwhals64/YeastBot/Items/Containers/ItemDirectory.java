@@ -51,15 +51,18 @@ public abstract class ItemDirectory<T extends Item> extends Item {
 			System.out.println("adding " + str);
 			items.add((T) Item.fetchItem(str));
 		}
+
 	}
-	
-	
+
+
 	
 	@Override
 	public void view(GuildMessageReceivedEvent event, int level) {
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 		level++; // the level is essentially the amount of parameters we've read so far.  For each iteration, we will always look at the next parameter inherently.
-		
+
+
+
 		if (args.length == level) { // if the level "matches" the args length (no extra parameters were entered), run the following code
 			EmbedBuilder embed = new EmbedBuilder();
 			

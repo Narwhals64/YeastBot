@@ -86,7 +86,6 @@ public abstract class Item {
 		if (!conData.equals("")) {
 			output.setContainmentData(conData.substring(1)); // the first character, if this isn't empty, will be '[', so we can cut it off
 		}
-	
 		return output;
 	}
 	

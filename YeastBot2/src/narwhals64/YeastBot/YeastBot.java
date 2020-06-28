@@ -22,7 +22,7 @@ public class YeastBot {
 	public static ArrayList<GameInstance> gameInstances;
 	public static HashMap<String, Integer> gameScopes;
 
-	public static boolean useYeastBotProfiles = false;
+	public static boolean useYeastBotProfiles = true;
 	
 	public static void main(String[] args) throws LoginException {
 		
@@ -39,7 +39,7 @@ public class YeastBot {
 		builder.addEventListeners(new Info());
 		builder.addEventListeners(new Question());
 		//builder.addEventListeners(new Say());
-		//builder.addEventListeners(new Inv());
+		builder.addEventListeners(new Inv());
 		//builder.addEventListeners(new Shop());
 
 

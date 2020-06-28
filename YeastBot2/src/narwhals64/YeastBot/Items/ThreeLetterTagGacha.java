@@ -18,7 +18,7 @@ public class ThreeLetterTagGacha extends UsableItem {
 		Tag newTag = new Tag(newGacha);
 		YeastBotProfile prof = getOwner();
 		prof.addItem(newTag);
-		prof.findItem(12).incrementAmt(-1);
+		incrementAmt(-1);
 		prof.save();
 	}
 }
