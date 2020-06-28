@@ -126,6 +126,10 @@ public class Pondscum extends GameInstance {
             }
             curPlayerIndex = (curPlayerIndex + 1)%players.size(); // do not play any cards and have the next person take their turn
             if (firstPass == curPlayerIndex) { // now, if it's the turn of the first person who started the passing streak, reset the minimum card value
+                curPlayerIndex--; // go back by 1 so that the last person who played gets the next turn
+                if (curPlayerIndex < 0) {
+                    curPlayerIndex += players.size();
+                } // if curPlayer becomes -1, make it not -1.
                 resetCardMinValue(); // these are the same instructions as the "heat end" instructions for when cards are actually played.
                 cardAmtNeeded = 0;
                 heatPile.putOnto(discard);
@@ -360,9 +364,12 @@ public class Pondscum extends GameInstance {
     private void checkWinner() {
         for (int i = 0 ; i < players.size() ; i++) { // cycle through the players list
             if (players.get(i).getHand().getSize() == 0) { // if a player's hand is empty
-                channel.sendMessage(guild.getMemberById(players.get((curPlayerIndex - 1 + players.size()) % players.size()).getId()).getAsMention() + "has finished!").queue();
+                channel.sendMessage(guild.getMemberById(players.get((curPlayerIndex - 1 + players.size()) % players.size()).getId()).getAsMention() + " has finished!").queue();
                 finishedPlayers.add(players.remove(i)); // then remove them from the list and add them to the finished players list
-                i--; // also, subtract one from i to make it cycle through every player
+                if (curPlayerIndex >= players.size()) {
+                    curPlayerIndex = players.size() - 1;
+                } // make sure the current player is not on someone who doesn't exist.
+                i = 0; // also, make sure it cycles through every player
             }
         }
         if (players.size() == 1) {
