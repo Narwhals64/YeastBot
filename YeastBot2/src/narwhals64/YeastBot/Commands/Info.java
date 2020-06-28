@@ -19,6 +19,8 @@ public class Info extends ListenerAdapter {
 			embed.setDescription("YeastBot is the single greatest Discord bot to ever grace the Earth.");
 			
 			embed.addField("Creator:","Narwhals64",false);
+
+			embed.addField("Trello Board:","https://trello.com/b/wKzxW1U3/yeast-bot-20",false);
 			
 			embed.setFooter("YeastBot",event.getAuthor().getAvatarUrl());
 			

@@ -38,16 +38,16 @@ public class YeastBot {
 		builder.addEventListeners(new Clear());
 		builder.addEventListeners(new Info());
 		builder.addEventListeners(new Question());
-		builder.addEventListeners(new Say());
-		builder.addEventListeners(new Inv());
-		builder.addEventListeners(new Shop());
+		//builder.addEventListeners(new Say());
+		//builder.addEventListeners(new Inv());
+		//builder.addEventListeners(new Shop());
 
 
 		builder.addEventListeners(new Ferg());
 
 		builder.addEventListeners(new Game());
 
-		builder.addEventListeners(new Fish());
+		//builder.addEventListeners(new Fish());
 		
 		builder.build();
 
