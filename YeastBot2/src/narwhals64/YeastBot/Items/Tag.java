@@ -49,7 +49,7 @@ public class Tag extends Item {
 			embed.addField("Unique Tag:",tagData,false);
 			embed.addField("Item ID: " + getId(),"",false);
 			
-			embed.setFooter("YeastBot",event.getAuthor().getAvatarUrl());
+			embed.setFooter("YeastBot",event.getGuild().getMemberById(getOwner().getId()).getUser().getAvatarUrl());
 			
 			event.getChannel().sendMessage(embed.build()).queue();
 			

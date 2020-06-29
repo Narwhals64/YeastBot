@@ -102,14 +102,12 @@ public abstract class ItemDirectory<T extends Item> extends Item {
 			
 			embed.addField("Item ID: " + getId(),"",false);
 			
-			embed.setFooter("YeastBot",event.getAuthor().getAvatarUrl());
+			embed.setFooter("YeastBot",event.getGuild().getMemberById(getOwner().getId()).getUser().getAvatarUrl());
 			
 			event.getChannel().sendMessage(embed.build()).queue();
 		}
 		
 		else if (args.length - 1 > level) {  // if there are more parameters, move on
-			
-
 			
 			try {
 				int itemIndex = Integer.parseInt(args[level + 1]) - 1;

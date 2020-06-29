@@ -20,7 +20,8 @@ public class Inventory extends ItemDirectory {
 		}
 
 		else if (args[1].startsWith("<@!") && args[1].endsWith(">")) {
-			YeastBot.getProfile(args[1].substring(3,20)).view(event,level+1);
+			//YeastBot.getProfile(args[1].substring(3,20)).view(event,level+1);
+			event.getChannel().sendMessage("Viewing other people's inventories is not yet implemented.").queue();
 		}
 		else {
 			super.view(event,level);

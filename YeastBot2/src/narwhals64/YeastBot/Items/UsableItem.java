@@ -33,7 +33,7 @@ public abstract class UsableItem extends Item {
 			embed.addField("Amount Owned: " + getAmt(),"",false);
 			embed.addField("Item ID: " + getId(),"",false);
 
-			embed.setFooter("YeastBot",event.getAuthor().getAvatarUrl());
+			embed.setFooter("YeastBot",event.getGuild().getMemberById(getOwner().getId()).getUser().getAvatarUrl());
 
 			event.getChannel().sendMessage(embed.build()).queue();
 
