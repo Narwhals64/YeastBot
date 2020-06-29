@@ -14,16 +14,21 @@ import narwhals64.YeastBot.Items.MasonJarOfYeastBotsShum;
 import narwhals64.YeastBot.Items.Tag;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
+import javax.annotation.Nullable;
+
 public class YeastBotProfile {
 
 	private String id;
 
 	private int crumbs; // this is the basic currency of Yeast Bot
-	private int loaves;
+	private int loaves; // this is the more elusive currency of Yeast Bot
 
 	private Inventory inv;
 
-
+	/**
+	 * Create a YeastBotProfile class
+	 * @param str Discord id
+	 */
 	public YeastBotProfile(String str) {
 		id = str;
 
@@ -31,22 +36,38 @@ public class YeastBotProfile {
 		loaves = 0;
 
 		inv = new Inventory();
+		inv.setOwner(this);
 
 
 		load();
 	}
 
-
+	/**
+	 * Get the Discord ID of the profile
+	 * @return String of Discord ID
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Get the amount of Crumbs this profile has
+	 * @return int of Crumb amount
+	 */
 	public int getCrumbs() {
 		return crumbs;
 	}
+	/**
+	 * Set the amount of Crumbs this profile has.
+	 * @param n int of the amount of Crumbs to be set.
+	 */
 	public void setCrumbs(int n) {
 		crumbs = n;
 	}
+	/**
+	 * Increment the Crumbs this profile has by an amount.
+	 * @param n int amount to be incremented.
+	 */
 	public void incrementCrumbs(int n) {
 		crumbs += n;
 	}
@@ -61,21 +82,38 @@ public class YeastBotProfile {
 		loaves += n;
 	}
 
-
+	/**
+	 * Get the Inventory item tied to this profile.
+	 * @return Inventory (extends ItemDirectory (extends Item)) inv
+	 */
 	public Inventory getInv() {
 		return inv;
+	}
+
+	/**
+	 * Find the first item that matches the given id within the Inventory.
+	 * Does not search other containers within Inventory.
+	 * @param id int ID of Item
+	 * @return Item with given ID or null
+	 */
+	public Item findItem(int id) {
+		return inv.findItem(id);
 	}
 	public Item getItem(int n) {
 		return inv.findItem(n);
 	}
 
 	public void addItem(Item item) {
-		inv.addItem(item);
+		inv.addItem(item.setOwner(this));
 	}
 	public void addItem(int n) {
-		inv.addItem(Item.fetchItem(n));
+		inv.addItem(Item.fetchItem(n).setOwner(this));
 	}
 
+	/**
+	 * Loads the profile's data from its matching text file.
+	 * Overrides any current values.
+	 */
 	public void load() {
 		try {
 
@@ -94,10 +132,6 @@ public class YeastBotProfile {
 			inv.setContainmentData(rawItemData);
 
 
-
-
-
-
 			br.close();
 
 
@@ -109,11 +143,11 @@ public class YeastBotProfile {
 
 				bw.write("1000:0"); // 1000 crumbs; 0 loaves
 				bw.newLine();
-				bw.write("2[]:12"); // tag bag and one three letter gacha
+				bw.write("2{1}[]:12{3}"); // tag bag and three three-letter gachas
 
 				bw.close();
 
-				load();
+				load(); // call back to the load method.  If this catch was used, then a text file did not exist.  Now that it exists, this catch will not be used again.
 
 			} catch (Exception f) {
 				System.out.println("Something went wrong trying to load a profile.");
@@ -125,70 +159,100 @@ public class YeastBotProfile {
 	/**
 	 * Given a String, this method will separate the input into an array of Strings.
 	 * Each element within the input will be of the form: itemNumber{itemValues}[containmentValues]
-	 * Example: 1{1,2,1,1}[1,4,5{2,3},7]
+	 * Example: 1{1:2:1:1}[1:4:5{2:3}:7]
 	 *
 	 * @param input
 	 * @return
 	 */
 	public static String[] separateWithParams(String input) {
-		ArrayList<String> outputAL = new ArrayList<>(); // create ArrayList because it's easier; convert to array later
+		ArrayList<String> outputAL = new ArrayList<>();
 
-		String nextElem = "";
+		char separator = ':';
 
-		int curly = 0;	 // curly braces {}
-		int square = 0;  // square brackets []
-		int parenth = 0; // parentheses ()
+		String entry = "";
 
-		int len = input.length();
+		int length = input.length();
 
-		for (int i = 0 ; i < len ; i++) { // go through each character individually
+		int curly = 0;
+		int square = 0;
+		int parenth = 0;
 
-			boolean addChar = true;
+		for (int i = 0 ; i < length ; i++) {
 
-			char ch = input.charAt(i);
+			char curChar = input.charAt(i);
 
-			if (ch == '{')
+			if (curChar == '{')
 				curly++;
-			else if (ch == '}')
+			else if (curChar == '}')
 				curly--;
-			else if (ch == '[')
+			else if (curChar == '[')
 				square++;
-			else if (ch == ']')
+			else if (curChar == ']')
 				square--;
-			else if (ch == '(')
+			else if (curChar == '(')
 				parenth++;
-			else if (ch == ')')
+			else if (curChar == ')')
 				parenth--;
-			else if (i == len - 1) {
-				nextElem += input.charAt(i);
-				outputAL.add("" + nextElem);
-			}
-			else if (curly == 0 && square == 0 && parenth == 0 && ch == ',') {
-				addChar = false;
-			}
 
 
-			if (addChar)
-				nextElem += input.charAt(i);
-			else {
-				outputAL.add("" + nextElem);
-				nextElem = "";
+
+			if (i == length - 1) {
+				entry += curChar;
+				outputAL.add("" + entry);
+				entry = "";
 			}
+			else if (curly == 0 && square == 0 && parenth == 0 && curChar == separator) {
+				outputAL.add("" + entry);
+				entry = "";
+			}
+			else
+				entry += curChar;
+
+
 		}
 
 		int size = outputAL.size();
+
 		String[] output = new String[size];
+
 		for (int i = 0 ; i < size ; i++) {
 			output[i] = outputAL.get(i);
 		}
 
 		return output;
+
 	}
 
+	/**
+	 * Cleans the Inventory, removing any Items with an amount of 0 or less.
+	 */
+	public void clean() {
+        inv.clean();
+    }
 
+	/**
+	 * Saves the profile to its matching text file.
+	 */
 	public void save() {
+		try {
+
+			BufferedWriter bw = new BufferedWriter(new FileWriter(YeastBot.profilesPath + id + ".txt"));
+
+			bw.write(crumbs + ":" + loaves);
+			bw.newLine();
+			bw.write(inv.getSaveData());
+
+			bw.close();
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
+	public void view(GuildMessageReceivedEvent event, int level) {
+		inv.view(event,level);
+	}
 	public void view(GuildMessageReceivedEvent event) {
 		inv.view(event,0);
 	}

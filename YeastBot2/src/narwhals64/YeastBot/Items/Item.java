@@ -32,9 +32,9 @@ public abstract class Item {
 	}
 	public static Item fetchItem(String data) {
 		int len = data.length();
-				
+
 		String stringId = "";
-		int idEnd = 0;
+		int idEnd = 0; // character index at which the id ends
 		
 		for (int i = 0 ; i < len ; i++) {
 			char ch = data.charAt(i);
@@ -48,7 +48,7 @@ public abstract class Item {
 		Item output = fetchItem(Integer.parseInt(stringId));
 		
 		String varData = "";
-		int varEnd = idEnd;
+		int varEnd = idEnd; // by default, it ends on the same character
 		int curly = 0; // keep track of curly braces
 		for (int i = idEnd ; i < len ; i++) {
 			char ch = data.charAt(i);
@@ -58,17 +58,17 @@ public abstract class Item {
 				curly--;
 			
 			if (curly == 0) {
-				varEnd = i;
+				varEnd = i + 1;
 				i = len;
 			}
 			else
 				varData += ch; // if we should not end, add the character
 		}
-		if (!varData.equals(""))
+		if (!varData.equals("")) {
 			output.setVariableData(varData.substring(1)); // the first character, if this isn't empty, will be '{', so we can cut it off
+		}
 		
 		String conData = "";
-		int conEnd = varEnd;
 		int square = 0;
 		for (int i = varEnd ; i < len ; i++) {
 			char ch = data.charAt(i);
@@ -78,7 +78,6 @@ public abstract class Item {
 				square--;
 			
 			if (square == 0) {
-				conEnd = i;
 				i = len;
 			}
 			else conData += ch;
@@ -98,7 +97,9 @@ public abstract class Item {
 	private String title; // for ,inv
 	
 	private int amt;
-	private boolean unique;	
+	private boolean unique;	// if true, this item does not stack. (amt always stays as 1)
+
+	private boolean tradable; // if true, this item cannot be traded between players
 	
 	
 	public Item(int id, String name, String desc, String lore) {
@@ -111,6 +112,8 @@ public abstract class Item {
 		title = "Item";
 		amt = 1;
 		unique = false;
+
+		tradable = true;
 		
 	}
 	
@@ -120,30 +123,33 @@ public abstract class Item {
 		if (!var.equals(""))
 			output += "{" + var + "}";
 		String con = getContainmentData();
-		if (!con.contentEquals(""))
+		if (!con.equals(""))
 			output += "[" + con + "]";
 		return output;
 	}
 	
 	public String getVariableData() {
-		return "";
+		return "" + amt;
 	}
 	public String getContainmentData() {
 		return "";
 	}
 	
 	public void setVariableData(String data) {
-		
+		String[] sepData = YeastBotProfile.separateWithParams(data);
+		setAmt(Integer.parseInt(sepData[0]));
 	}
 	public void setContainmentData(String data) {
 		
 	}
 	
-	public void setOwner(String id) {
+	public Item setOwner(String id) {
 		owner = YeastBot.getProfile(id);
+		return this;
 	}
-	public void setOwner(YeastBotProfile prof) {
+	public Item setOwner(YeastBotProfile prof) {
 		owner = prof;
+		return this;
 	}
 	public YeastBotProfile getOwner() {
 		return owner;
@@ -156,7 +162,10 @@ public abstract class Item {
 	public String getName() {
 		return name;
 	}
-	
+	public void setName(String newName) {
+		name = newName;
+	}
+
 	public String getDesc() {
 		return desc;
 	}
@@ -175,6 +184,9 @@ public abstract class Item {
 	public int getAmt() {
 		return amt;
 	}
+	public void setAmt(int n) {
+		amt = n;
+	}
 	public void incrementAmt(int n) {
 		amt += n;
 	}
@@ -185,13 +197,22 @@ public abstract class Item {
 	public boolean getUnique() {
 		return unique;
 	}
-	
+
+	public void setTradability(boolean tradability) {
+		tradable = tradability;
+	}
+
+
+	public void clean() {
+		// non-directory items cannot be cleaned, so just sit tight.
+	}
+
 	
 	/**
 	 * Views information about the given item.
 	 * For items with extra parameters that allow closer inspection, the int level is used.
 	 * @param event The event that 
-	 * @param level The current "level" of item (in case of extra parameters).  ",view 3" would view the item with index 3 and be at level 0.
+	 * @param level The index of the parameter we are currently reading.
 	 */
 	public void view(GuildMessageReceivedEvent event, int level) {
 		event.getChannel().sendTyping().queue();
