@@ -8,8 +8,8 @@ public class Say extends ListenerAdapter {
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		String args[] = event.getMessage().getContentRaw().split("\\s+");
 		
-		if (args[0].equalsIgnoreCase(YeastBot.prefix + "say")) {
-			String message = event.getMessage().getContentRaw().substring(5);
+		if (args[0].equalsIgnoreCase(YeastBot.getPrefix(event) + "say")) {
+			String message = event.getMessage().getContentRaw().substring(YeastBot.getPrefix(event).length() + 4);
 			
 			event.getChannel().deleteMessageById(event.getMessage().getId()).queue();
 			event.getChannel().sendTyping().queue();

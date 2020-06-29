@@ -11,7 +11,7 @@ public class Game extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         String args[] = event.getMessage().getContentRaw().split("\\s+");
 
-        if (args[0].equalsIgnoreCase(YeastBot.prefix + "game") || args[0].equalsIgnoreCase(YeastBot.prefix + "g")) {
+        if (args[0].equalsIgnoreCase(YeastBot.getPrefix(event) + "game") || args[0].equalsIgnoreCase(YeastBot.prefix + "g")) {
 
             int arguments = args.length;
 

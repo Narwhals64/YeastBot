@@ -11,7 +11,7 @@ public class Fish extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         String args[] = event.getMessage().getContentRaw().split("\\s+");
 
-        if (args[0].equalsIgnoreCase(YeastBot.prefix + "fish")) {
+        if (args[0].equalsIgnoreCase(YeastBot.getPrefix(event) + "fish")) {
 
             EmbedBuilder fish = new EmbedBuilder();
 

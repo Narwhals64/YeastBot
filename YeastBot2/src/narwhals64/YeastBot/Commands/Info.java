@@ -9,7 +9,7 @@ public class Info extends ListenerAdapter {
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		String args[] = event.getMessage().getContentRaw().split("\\s+");
 		
-		if (args[0].equalsIgnoreCase(YeastBot.prefix + "info")) {
+		if (args[0].equalsIgnoreCase(YeastBot.getPrefix(event) + "info")) {
 			event.getChannel().sendTyping().queue();
 			
 			EmbedBuilder embed = new EmbedBuilder();

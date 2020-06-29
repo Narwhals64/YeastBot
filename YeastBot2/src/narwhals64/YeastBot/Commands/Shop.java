@@ -10,7 +10,7 @@ public class Shop extends ListenerAdapter{
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		String args[] = event.getMessage().getContentRaw().split("\\s+");
 		
-		if (args[0].equalsIgnoreCase(YeastBot.prefix + "shop")) {
+		if (args[0].equalsIgnoreCase(YeastBot.getPrefix(event) + "shop")) {
 			YeastBotProfile prof = YeastBot.getProfile(event.getAuthor().getId());
 			
 			if (args.length == 1) {

@@ -13,7 +13,7 @@ public class Clear extends ListenerAdapter {
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		String args[] = event.getMessage().getContentRaw().split("\\s+");
 		
-		if (args[0].equalsIgnoreCase(YeastBot.prefix + "clear")) {
+		if (args[0].equalsIgnoreCase(YeastBot.getPrefix(event) + "clear")) {
 			if (args.length < 2) { // Error message.
 				new ErrorMessage(event, ",clear","Clear","Incorrect usage of command.","An invalid amount of arguments was detected.  Make sure the command is written correctly with the correct amount of parameters.");
 			}

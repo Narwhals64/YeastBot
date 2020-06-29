@@ -10,7 +10,7 @@ public class Ferg extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         String args[] = event.getMessage().getContentRaw().split("\\s+");
 
-        if (args[0].equalsIgnoreCase(YeastBot.prefix + "ferg")) {
+        if (args[0].equalsIgnoreCase(YeastBot.getPrefix(event) + "ferg")) {
 
             try {
                 event.getGuild().getMemberById(args[1]).getUser().openPrivateChannel().queue((channel) -> {
