@@ -15,6 +15,8 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 public class YeastBot {
 	
 	public static String prefix = ",";
+
+	public static String id = "243061750113632258";
 	
 	public static String profilesPath = "C:\\Users\\Ethan Rao\\Desktop\\Yeast Bot\\profiles\\";
 	public static String guildsPath = "C:\\Users\\Ethan Rao\\Desktop\\Yeast Bot\\profiles\\";
