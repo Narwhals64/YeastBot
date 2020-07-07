@@ -35,6 +35,10 @@ public abstract class GameInstance {
         return open;
     }
 
+    public void setClosed() {
+        open = false;
+    }
+
     public abstract void addPlayer(GuildMessageReceivedEvent event);
 
 

@@ -5,11 +5,15 @@ import narwhals64.YeastBot.YeastBot;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
+import java.awt.*;
+
 public class Inventory extends ItemDirectory {
 
 	public Inventory() {
-		super(0, "Inventory", "The entire player Inventory.", "How the hell are you viewing this as an item?  There must have been a mistake somewhere.");
+		super(0, "Inventory", "The entire player Inventory.", "");
 		setTitle("Inventory");
+		setUnique();
+		setTradability(false);
 	}
 
 	public void view(GuildMessageReceivedEvent event, int level) {
@@ -27,6 +31,36 @@ public class Inventory extends ItemDirectory {
 			super.view(event,level);
 		}
 
+	}
+
+	@Override
+	public void display(GuildMessageReceivedEvent event, int level) {
+		event.getChannel().sendTyping().queue();
+
+		EmbedBuilder embed = new EmbedBuilder();
+
+		Color color = new Color(0xC70000); // All containers are this shade of red.
+		embed.setColor(color);
+
+		embed.setTitle(getTitle() + " Information");
+		embed.setDescription("Extra Parameters:\n(a number) - View an item at the given index.");
+
+		embed.addField("Currencies:","**Crumbs**: " + getOwner().getCrumbs() + "\n**Loaves**: " + getOwner().getLoaves(),false);
+
+		embed.addField(getName(),getDesc(),false);
+
+		if (!getLore().equals("")) {
+			embed.addField("",getLore(),false);
+		} // Add Lore if available.
+
+		embed.addField("Items in " + getTitle() + ":",invToString(1),false);
+		embed.addField("Item ID: " + getId(),"",false);
+
+		embed.setFooter("YeastBot",event.getGuild().getMemberById(getOwner().getId()).getUser().getAvatarUrl());
+
+		event.getChannel().sendMessage(embed.build()).queue();
+
+		embed.clear();
 	}
 
 	public String getSaveData() {

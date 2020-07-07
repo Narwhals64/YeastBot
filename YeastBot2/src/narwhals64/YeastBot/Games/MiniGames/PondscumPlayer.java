@@ -1,7 +1,7 @@
-package narwhals64.YeastBot.CardGames.PlayerTypes;
+package narwhals64.YeastBot.Games.MiniGames;
 
-import narwhals64.YeastBot.CardGames.PileTypes.Hand;
-import narwhals64.YeastBot.CardGames.GamePlayer;
+import narwhals64.YeastBot.Games.Resources.PileTypes.Hand;
+import narwhals64.YeastBot.Games.Resources.GamePlayer;
 
 /**
  * A player in a game of Pondscum.  Attached to one user id.
@@ -9,6 +9,7 @@ import narwhals64.YeastBot.CardGames.GamePlayer;
 public class PondscumPlayer extends GamePlayer {
 
     private Hand hand;
+    private int wins;
 
     public PondscumPlayer() {
         super();
@@ -17,6 +18,14 @@ public class PondscumPlayer extends GamePlayer {
     public PondscumPlayer(String id) {
         super(id);
         hand = new Hand();
+    }
+
+    public int addWins(int n) {
+        wins += n;
+        return wins;
+    }
+    public int getWins() {
+        return wins;
     }
 
 

@@ -1,4 +1,4 @@
-package narwhals64.YeastBot.CardGames;
+package narwhals64.YeastBot.Games.Resources;
 
 import java.util.ArrayList;
 import java.util.Collections;

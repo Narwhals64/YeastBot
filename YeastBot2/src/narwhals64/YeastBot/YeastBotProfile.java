@@ -20,16 +20,29 @@ public class YeastBotProfile {
 
 	private String id;
 
+	// Line 1 - Permissions
+	private int administration;
+
+	// Line 2 - General Statistics
+
+
+	// Line 3 - Currencies
 	private int crumbs; // this is the basic currency of Yeast Bot
 	private int loaves; // this is the more elusive currency of Yeast Bot
 
+	// Line 4 - Inventory
 	private Inventory inv;
+
+
+
 
 	/**
 	 * Create a YeastBotProfile class
 	 * @param str Discord id
 	 */
 	public YeastBotProfile(String str) {
+		administration = 0;
+
 		id = str;
 
 		crumbs = 0;
@@ -50,6 +63,10 @@ public class YeastBotProfile {
 		return id;
 	}
 
+	public int getAdministration() {
+		return administration;
+	}
+
 	/**
 	 * Get the amount of Crumbs this profile has
 	 * @return int of Crumb amount
@@ -68,8 +85,9 @@ public class YeastBotProfile {
 	 * Increment the Crumbs this profile has by an amount.
 	 * @param n int amount to be incremented.
 	 */
-	public void incrementCrumbs(int n) {
+	public int incrementCrumbs(int n) {
 		crumbs += n;
+		return n;
 	}
 
 	public int getLoaves() {
@@ -119,6 +137,11 @@ public class YeastBotProfile {
 
 			BufferedReader br = new BufferedReader(new FileReader(new File(YeastBot.profilesPath + id + ".txt")));
 
+			// PERMISSIONS
+			administration = Integer.parseInt(br.readLine());
+
+			// GENERAL STATS
+			br.readLine();
 
 			// CURRENCIES
 			String[] currencies = br.readLine().split(":");
@@ -141,9 +164,13 @@ public class YeastBotProfile {
 
 				BufferedWriter bw = new BufferedWriter(new FileWriter(YeastBot.profilesPath + id + ".txt"));
 
+				bw.write("0"); // No permissions
+				bw.newLine();
+				bw.write(""); // No general stats
+				bw.newLine();
 				bw.write("1000:0"); // 1000 crumbs; 0 loaves
 				bw.newLine();
-				bw.write("2{1}[]:12{3}"); // tag bag and three three-letter gachas
+				bw.write("1{1}[]:110{3}"); // tag bag and three three-letter gachas
 
 				bw.close();
 
@@ -238,6 +265,10 @@ public class YeastBotProfile {
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(YeastBot.profilesPath + id + ".txt"));
 
+			bw.write("" + administration);
+			bw.newLine();
+			bw.write("");
+			bw.newLine();
 			bw.write(crumbs + ":" + loaves);
 			bw.newLine();
 			bw.write(inv.getSaveData());

@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 public class ThreeLetterTagGacha extends UsableItem {
 
 	public ThreeLetterTagGacha() {
-		super(12, "Three-Letter Tag Gacha", "An item one may use to acquire a random Tag, comprised of only three letters.", "");
+		super(110, "Three-Letter Tag Gacha", "An item one may use to acquire a random Tag, comprised of only three letters.", "");
 		setUnique();
 	}
 	
@@ -20,7 +20,7 @@ public class ThreeLetterTagGacha extends UsableItem {
 		Tag newTag = new Tag(newGacha);
 		event.getChannel().sendMessage("You received the following Tag: " + newGacha).queue();
 		YeastBotProfile prof = getOwner();
-		((ItemDirectory)prof.findItem(2)).addItem(newTag); // add tag directly to tag bag
+		((ItemDirectory)prof.findItem(1)).addItem(newTag); // add tag directly to tag bag
 		incrementAmt(-1);
 		prof.clean();
 		prof.save();

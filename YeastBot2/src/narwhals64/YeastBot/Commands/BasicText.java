@@ -20,7 +20,7 @@ public class BasicText extends ListenerAdapter {
                 int scope = YeastBot.gameScopes.get(event.getAuthor().getId());
 
                 if (scope != -1)
-                    YeastBot.gameInstances.get(scope).enterCommand(event);
+                    YeastBot.minigameInstances.get(scope).enterCommand(event);
 
 
             } catch (Exception e) {

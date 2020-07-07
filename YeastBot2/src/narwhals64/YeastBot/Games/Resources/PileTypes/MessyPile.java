@@ -1,6 +1,6 @@
-package narwhals64.YeastBot.CardGames.PileTypes;
+package narwhals64.YeastBot.Games.Resources.PileTypes;
 
-import narwhals64.YeastBot.CardGames.Pile;
+import narwhals64.YeastBot.Games.Resources.Pile;
 
 public class MessyPile extends Pile {
 

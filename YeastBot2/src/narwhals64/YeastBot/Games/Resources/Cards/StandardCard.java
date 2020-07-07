@@ -1,6 +1,6 @@
-package narwhals64.YeastBot.CardGames.Cards;
+package narwhals64.YeastBot.Games.Resources.Cards;
 
-import narwhals64.YeastBot.CardGames.Card;
+import narwhals64.YeastBot.Games.Resources.Card;
 
 public class StandardCard extends Card {
     /**

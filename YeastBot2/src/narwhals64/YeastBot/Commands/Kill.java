@@ -13,7 +13,7 @@ public class Kill extends ListenerAdapter {
         boolean allowKill = false;
 
 
-        if (allowKill && event.getAuthor().getId().equals("240601741085769729")) {
+        if (allowKill && YeastBot.getProfile(event.getAuthor().getId()).getAdministration() == 99) {
 
             if (args[0].equalsIgnoreCase(YeastBot.getPrefix(event) + "kill")) {
 

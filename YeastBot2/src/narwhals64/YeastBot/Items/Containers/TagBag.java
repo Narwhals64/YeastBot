@@ -4,7 +4,7 @@ import narwhals64.YeastBot.Items.Tag;
 
 public class TagBag extends ItemDirectory<Tag> {
 	public TagBag() {
-		super(2,"Tag Bag","Holds Tags.","");
+		super(1,"Tag Bag","Holds Tags.","");
 		setTitle("Container");
 		setUnique();
 		setTradability(false);

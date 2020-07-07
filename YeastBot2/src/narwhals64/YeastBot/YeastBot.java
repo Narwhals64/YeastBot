@@ -1,12 +1,10 @@
 package narwhals64.YeastBot;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.security.auth.login.LoginException;
 
-import narwhals64.YeastBot.CardGames.GamePlayer;
 import narwhals64.YeastBot.Commands.*;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -19,12 +17,12 @@ public class YeastBot {
 	public static String id = "243061750113632258";
 	
 	public static String profilesPath = "C:\\Users\\Ethan Rao\\Desktop\\Yeast Bot\\profiles\\";
-	public static String guildsPath = "C:\\Users\\Ethan Rao\\Desktop\\Yeast Bot\\profiles\\";
+	public static String guildsPath = "C:\\Users\\Ethan Rao\\Desktop\\Yeast Bot\\guilds\\";
 	
 	public static ArrayList<YeastBotProfile> profiles = new ArrayList<>();
 	public static ArrayList<GuildProfile> guilds = new ArrayList<>();
 
-	public static ArrayList<GameInstance> gameInstances;
+	public static ArrayList<GameInstance> minigameInstances;
 	public static HashMap<String, Integer> gameScopes;
 
 	public static boolean useYeastBotProfiles = true;
@@ -47,7 +45,7 @@ public class YeastBot {
 		builder.addEventListeners(new Say());
 		builder.addEventListeners(new SetPrefix());
 
-        builder.addEventListeners(new Game());
+        builder.addEventListeners(new MiniGame());
 
         builder.addEventListeners(new Inv());
 		//builder.addEventListeners(new Shop());
@@ -55,8 +53,6 @@ public class YeastBot {
 
 		builder.addEventListeners(new Ferg());
 
-
-		//builder.addEventListeners(new Fish());
 
 
 		//builder.addEventListeners(new Kill());
@@ -67,7 +63,7 @@ public class YeastBot {
 
 
 
-		gameInstances = new ArrayList<>();
+		minigameInstances = new ArrayList<>();
 		gameScopes = new HashMap<>();
 
 	}
@@ -82,6 +78,10 @@ public class YeastBot {
 			return profiles.get(profiles.size()-1);
         }
         return null;
+    }
+
+    public static YeastBotProfile getProfile(GuildMessageReceivedEvent event) {
+	    return getProfile(event.getAuthor().getId());
     }
 
     public static GuildProfile getGuild(String id) {

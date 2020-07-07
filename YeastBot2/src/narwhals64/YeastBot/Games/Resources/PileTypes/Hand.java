@@ -1,7 +1,7 @@
-package narwhals64.YeastBot.CardGames.PileTypes;
+package narwhals64.YeastBot.Games.Resources.PileTypes;
 
-import narwhals64.YeastBot.CardGames.Card;
-import narwhals64.YeastBot.CardGames.Pile;
+import narwhals64.YeastBot.Games.Resources.Card;
+import narwhals64.YeastBot.Games.Resources.Pile;
 
 /**
  * A list of Cards in which the player can see every card, face up, and draw any of them (the order does not matter).

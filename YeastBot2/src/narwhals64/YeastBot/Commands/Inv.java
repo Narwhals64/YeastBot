@@ -10,7 +10,7 @@ public class Inv extends ListenerAdapter {
 		String args[] = event.getMessage().getContentRaw().split("\\s+");
 
 
-		if (args[0].equalsIgnoreCase(YeastBot.getPrefix(event) + "inv")) {
+		if (args[0].equalsIgnoreCase(YeastBot.getPrefix(event) + "inv") || args[0].equalsIgnoreCase(YeastBot.getPrefix(event) + "i")) {
 
 			YeastBotProfile prof = YeastBot.getProfile(event.getAuthor().getId());
 			

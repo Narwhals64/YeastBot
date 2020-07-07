@@ -1,4 +1,4 @@
-package narwhals64.YeastBot.CardGames;
+package narwhals64.YeastBot.Games.Resources;
 
 public abstract class Card {
     private int minorRank;

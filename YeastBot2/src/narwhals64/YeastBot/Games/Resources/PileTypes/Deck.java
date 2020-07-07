@@ -1,11 +1,7 @@
-package narwhals64.YeastBot.CardGames.PileTypes;
+package narwhals64.YeastBot.Games.Resources.PileTypes;
 
-import narwhals64.YeastBot.CardGames.Card;
-import narwhals64.YeastBot.CardGames.Cards.StandardCard;
-import narwhals64.YeastBot.CardGames.Pile;
-
-import java.util.ArrayList;
-import java.util.Collections;
+import narwhals64.YeastBot.Games.Resources.Cards.StandardCard;
+import narwhals64.YeastBot.Games.Resources.Pile;
 
 /**
  * A stack of cards in which the top card can be drawn and only the top card can be seen.

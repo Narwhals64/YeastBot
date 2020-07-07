@@ -1,5 +1,6 @@
 package narwhals64.YeastBot.Items.Containers;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 import narwhals64.YeastBot.YeastBotProfile;
@@ -86,41 +87,49 @@ public abstract class ItemDirectory<T extends Item> extends Item {
 	public void view(GuildMessageReceivedEvent event, int level) {
 		String[] args = event.getMessage().getContentRaw().split("\\s+");
 
-
-
-		if (args.length - 1 == level) { // if the level "matches" the args length (no extra parameters were entered), run the following code
-			EmbedBuilder embed = new EmbedBuilder();
-			
-			embed.setColor(0xC70000);
-			
-			embed.setTitle(getTitle() + " Information");
-			embed.setDescription("Extra Parameters:\nn - View Item on page.\npage n - View page.");
-			
-			embed.addField(getName(),getDesc(),false);
-
-			embed.addField("Items in " + getTitle() + ":",invToString(1),false);
-			
-			embed.addField("Item ID: " + getId(),"",false);
-			
-			embed.setFooter("YeastBot",event.getGuild().getMemberById(getOwner().getId()).getUser().getAvatarUrl());
-			
-			event.getChannel().sendMessage(embed.build()).queue();
+		if (args.length - 1 == level) {
+			display(event,level);
 		}
-		
 		else if (args.length - 1 > level) {  // if there are more parameters, move on
-			
 			try {
 				int itemIndex = Integer.parseInt(args[level + 1]) - 1;
 
 				items.get(itemIndex).view(event, level + 1);
 			}
 			catch (Exception e) {
-				e.printStackTrace();
 				new ErrorMessage(event,"View Item",",inv","View an item in the user's inventory or an item directory.","Did you enter an invalid number?");
 			}
 		}
 	}
-	
+
+	@Override
+	public void display(GuildMessageReceivedEvent event, int level) {
+		event.getChannel().sendTyping().queue();
+
+		EmbedBuilder embed = new EmbedBuilder();
+
+		Color color = new Color(0xC70000); // All containers are this shade of red.
+		embed.setColor(color);
+
+		embed.setTitle(getTitle() + " Information");
+		embed.setDescription("Extra Parameters:\n(a number) - View an item at the given index.");
+
+		embed.addField(getName(),getDesc(),false);
+
+		if (!getLore().equals("")) {
+			embed.addField("",getLore(),false);
+		} // Add Lore if available.
+
+		embed.addField("Items in " + getTitle() + ":",invToString(1),false);
+		embed.addField("Item ID: " + getId(),"",false);
+
+		embed.setFooter("YeastBot",event.getGuild().getMemberById(getOwner().getId()).getUser().getAvatarUrl());
+
+		event.getChannel().sendMessage(embed.build()).queue();
+
+		embed.clear();
+	}
+
 	public String invToString(int page) {
 		// if the page is too high or too low then have it loop around.  page 0 = first page
 		int len = items.size();
