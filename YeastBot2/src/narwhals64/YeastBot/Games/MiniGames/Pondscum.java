@@ -16,9 +16,6 @@ import java.util.Collections;
 public class Pondscum extends GameInstance {
     private PondscumPlayer host;
 
-    private int buyIn; // The amount of crumbs necessary to play the game
-    private int pool; // The prize pool for winning the game.
-
     private ArrayList<PondscumPlayer> finishedPlayers; // when a player is finished with his hand, he goes here.
     private ArrayList<PondscumPlayer> players; // at first, this is not ordered.  After the first game, it is ordered.  First is prez, last is pondscum
     private ArrayList<PondscumPlayer> waitingList; // waiting list for new players.  Each new player pushes the rest of the players up, thus becoming the next Pondscum.
@@ -32,7 +29,6 @@ public class Pondscum extends GameInstance {
 
     private int highestCard; // card with the highest value.  Default is 3.  Everything below it, looping around from 2-Ace-King, is "lesser" than the highest card value
     private boolean currentlyPlaying;
-    private boolean allowMorePlayers; // if this game is for crumbs, do not allow more players to join
     private int curPlayerIndex;
     private int cardMinValue; // the current minimum value for a card to be played.  Played cards must be this value or higher.
     private int cardAmtNeeded; // the amount of cards needed to play in this heat.
@@ -40,9 +36,6 @@ public class Pondscum extends GameInstance {
 
     public Pondscum(GuildMessageReceivedEvent event) {
         super("Pondscum Game #" + (GAME_INDEX_COUNTER+1));
-
-        buyIn = 0;
-        pool = 0;
 
         host = new PondscumPlayer(event.getAuthor().getId());
         finishedPlayers = new ArrayList<>();
@@ -59,7 +52,6 @@ public class Pondscum extends GameInstance {
 
         highestCard = 3;
         currentlyPlaying = false;
-        allowMorePlayers = true;
         curPlayerIndex = 0;
         cardMinValue = 0;
         cardAmtNeeded = 0;
@@ -102,25 +94,12 @@ public class Pondscum extends GameInstance {
                 doNotAdd = true;
         } // if the player is already in the waiting list, do not add
 
-        if (!allowMorePlayers) {
-            doNotAdd = true;
-        } // if the game is not allowing more players due to betting, do not add
-
-        if (YeastBot.getProfile(event).getCrumbs() < buyIn) {
-            doNotAdd = true;
-        }
-
         if (!doNotAdd) {
             addPlayer(new PondscumPlayer(newPlayer.getId().toString()));
-            if (buyIn == 0) {
-                event.getChannel().sendMessage(event.getGuild().getMemberById(event.getAuthor().getId()).getAsMention() + " has been added to the Waiting List!  You will join in the next round.").queue();
-            } // announce they have joined
-            else {
-                event.getChannel().sendMessage(event.getGuild().getMemberById(event.getAuthor().getId()).getAsMention() + " has been added to the Waiting List!  **The buy-in is " + buyIn + " Crumbs.**  You will join in the next round.").queue();
-            } // OR announce they have joined and bought in.
+            event.getChannel().sendMessage(event.getGuild().getMemberById(event.getAuthor().getId()).getAsMention() + " has been added to the Waiting List!  You will join in the next round.").queue();
         } // announce they could be added.
         else {
-            event.getChannel().sendMessage(event.getGuild().getMemberById(event.getAuthor().getId()).getAsMention() + ", you were not able to be put into the game.  You may already be in the game, not have enough Crumbs to join, or the game is not allowing more players.").queue();
+            event.getChannel().sendMessage(event.getGuild().getMemberById(event.getAuthor().getId()).getAsMention() + ", you were not able to be put into the game.  You may already be in the game or the game is not allowing more players.").queue();
         } // announce they could not be added.
     }
 
@@ -272,15 +251,6 @@ public class Pondscum extends GameInstance {
 
         if (true) {
             currentlyPlaying = true;
-            if (buyIn != 0) {
-                if (allowMorePlayers) {
-                    for (PondscumPlayer pp : players) {
-                        YeastBot.getProfile(pp.getId()).incrementLoaves(buyIn);
-                        pool += buyIn;
-                    }
-                } // this will be true only before the first round starts.  If it is, we set it to false but also take everyone's money.
-                allowMorePlayers = false;
-            }
             resetCardMinValue();
             heatPile.setVisibleGroups(3);
             heatPile.setGroupSizes(1);
