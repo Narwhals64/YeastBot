@@ -14,7 +14,7 @@ public class YeastBot {
 	
 	public static String prefix = ",";
 
-	public static String id = "243061750113632258";
+	public static String id = "[ PLACE TOKEN HERE ]";
 	
 	public static String profilesPath = "C:\\Users\\Ethan Rao\\Desktop\\Yeast Bot\\profiles\\";
 	public static String guildsPath = "C:\\Users\\Ethan Rao\\Desktop\\Yeast Bot\\guilds\\";
