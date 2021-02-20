@@ -14,7 +14,7 @@ public class YeastBot {
 	
 	public static String prefix = ",";
 
-	public static String id = "[ PLACE TOKEN HERE ]";
+	public static String id = "243061750113632258";
 	
 	public static String profilesPath = "C:\\Users\\Ethan Rao\\Desktop\\Yeast Bot\\profiles\\";
 	public static String guildsPath = "C:\\Users\\Ethan Rao\\Desktop\\Yeast Bot\\guilds\\";
@@ -33,7 +33,7 @@ public class YeastBot {
 		JDABuilder builder = new JDABuilder();
 
 
-		builder.setToken("MjQzMDYxNzUwMTEzNjMyMjU4.XiqTXg.iX0FvigyckBZNHB4OfRQvX8ZiwM");
+		builder.setToken("MjQzMDYxNzUwMTEzNjMyMjU4.XiqTXg.iX0FvigyckBZNHB4OfRQvX8ZiwM"); // this is the wrong token for YeastBot.
 		
 		builder.setStatus(OnlineStatus.ONLINE);
 
